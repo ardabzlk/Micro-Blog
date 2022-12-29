@@ -2,3 +2,6 @@
 server/api_constants.py
 
 __pycache__
+
+.venv/
+env/

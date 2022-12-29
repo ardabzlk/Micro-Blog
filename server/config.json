@@ -5,11 +5,9 @@
   "SECRET_KEY": "micro-blog-playground",
   "DB_NAME": "micro-blog",
   "WTF_CSRF_ENABLED": false,
-  "DEV_SERVER_CONFIG": {
-    "DB_NAME": "micro-blog-dev",
-    "host": "localhost",
-    "port": 27017,
-    "alias": "default",
-    "uuidRepresentation": "standard"
+
+  "MONGODB_SETTINGS": {
+    "db": "micro-blog",
+    "host": "todo"
   }
 }

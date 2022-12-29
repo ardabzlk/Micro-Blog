@@ -56,6 +56,10 @@ def login():
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
     else:
         user = User.objects(email=authUserEmail).first()
+
+        # TODO: do what you need to do
+        # user not found scenario
+
         response_data = {"uid": user.id}
         response_data["username"] = user.username
         if check_password_hash(user.password, authPassword):
