@@ -1,16 +1,18 @@
 import pytest
 
-from flask import current_app
+from flask import current_app, jsonify
 import mongomock
 from mongoengine import connect, get_connection, disconnect
-
+from werkzeug.security import generate_password_hash
 from src.models.user_model import User
 
 
 @pytest.fixture
 def mock_config(tmp_path, monkeypatch):
     """Mock config file for testing"""
-
+    # create a temporary config file
+    # and write some config data to it
+    # the config file will be deleted after the test is finished
     config = tmp_path / "config.json"
     config.write_text(
         """
@@ -36,16 +38,18 @@ def mock_config(tmp_path, monkeypatch):
 
 
 @pytest.fixture
-def app_client(mock_config, monkeypatch):
+# pass the mock_config fixture as an argument to the app_client fixture
+def app_client(mock_config):
     from app import app, db
-
+    # create the tables in the database
     user = User(
         name="foo",
         surname="bar",
         username="foobar",
         email="foo@bar.com",
-        password="foobar",
+        # generation hash password for user as in the register route
+        password=generate_password_hash(
+            "foobar", method='sha256'),
     )
     user.save()
-
     return app.test_client()

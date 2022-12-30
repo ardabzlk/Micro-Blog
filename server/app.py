@@ -10,6 +10,7 @@ from src.models.models import db
 
 import os
 
+
 config_path = os.environ.get("CONFIG_PATH", "config.json")
 
 with open(config_path, 'r') as f:
@@ -19,8 +20,7 @@ app = Flask(config["APP_NAME"])
 app.config.update(config)
 
 CORS(app)
-# The toolbar is only enabled in debug mode:
-app.debug = config["DEBUG"]
+
 
 # set a 'SECRET_KEY' to enable the Flask session cookies
 app.config["TESTING"] = config["TESTING"]
