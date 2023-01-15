@@ -3,5 +3,11 @@
   "DEBUG": true,
   "TESTING": true,
   "SECRET_KEY": "micro-blog-playground",
-  "DB_NAME": "micro-blog"
+  "DB_NAME": "micro-blog",
+  "WTF_CSRF_ENABLED": false,
+
+  "MONGODB_SETTINGS": {
+    "db": "micro-blog",
+    "host": "todo"
+  }
 }

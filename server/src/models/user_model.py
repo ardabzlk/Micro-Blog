@@ -1,6 +1,6 @@
 from bson import json_util
 import json
-from models.models import db
+from src.models.models import db
 
 
 # ----------------------------------------------

@@ -1,9 +1,14 @@
-from models.models import db
+from src.models.models import db
 # ----------------------------------------------
 # User collection
 
 
-class blog_posts(db.Document):
+class Test_Model(db.Document):
+    title = db.StringField()
+    text = db.StringField()
+
+
+class Blog_posts(db.Document):
 
     author_id = db.ObjectIdField(null=False, required=True, exists=True)
     author_username = db.StringField(null=False, required=True, exists=True)

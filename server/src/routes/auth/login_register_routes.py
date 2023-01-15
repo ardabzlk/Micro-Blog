@@ -1,8 +1,8 @@
 from flask import request, make_response
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
-from models.user_model import User
-from services.Exceptions import InvalidUsage
+from src.models.user_model import User
+from src.services.Exceptions import InvalidUsage
 import datetime
 import jwt
 from bson import json_util
@@ -56,18 +56,22 @@ def login():
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
     else:
         user = User.objects(email=authUserEmail).first()
-        response_data = {"uid": user.id}
-        response_data["username"] = user.username
-        if check_password_hash(user.password, authPassword):
-            token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
-            ) + datetime.timedelta(hours=6)}, 'micro-blog-playground')
-            response_data["token"] = token
 
-            json_data_with_backslashes = json_util.dumps(response_data)
-            json_data = json.loads(json_data_with_backslashes)
-            return make_response(json_data, 200)
+        if not user:
+            return make_response('No such user', 404, {'WWW-Authenticate': 'Basic realm="Login Required"'})
         else:
-            return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+            if check_password_hash(user.password, authPassword):
+                response_data = {"uid": user.id}
+                response_data["username"] = user.username
+                token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
+                ) + datetime.timedelta(hours=6)}, 'micro-blog-playground')
+                response_data["token"] = token
+
+                json_data_with_backslashes = json_util.dumps(response_data)
+                json_data = json.loads(json_data_with_backslashes)
+                return make_response(json_data, 200)
+            else:
+                return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
 # -----------------------------------------------------------

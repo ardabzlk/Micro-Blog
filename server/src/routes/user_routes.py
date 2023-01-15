@@ -1,6 +1,6 @@
-from models.user_model import User
+from src.models.user_model import User
 from flask import make_response
-from services.JWT_service import token_required
+from src.services.JWT_service import token_required
 
 # ------------------------------------------------------------
 # get all user list

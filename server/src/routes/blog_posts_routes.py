@@ -1,11 +1,11 @@
 from flask import request, make_response
-from models.blog_posts_model import blog_posts, blog_categories, blog_post_comment, blog_post_vote
+from src.models.blog_posts_model import Blog_posts, blog_categories, blog_post_comment, blog_post_vote
 import datetime
-from services.Exceptions import InvalidUsage
-from services.JWT_service import token_required
+from src.services.Exceptions import InvalidUsage
+from src.services.JWT_service import token_required
 from bson import json_util
 import json
-from models.models import StatusCodeEnums
+from src.models.models import StatusCodeEnums
 
 
 # ------------------------------------------------------------
@@ -33,7 +33,7 @@ def add_post(current_user):
                 _category_id == None):
             return make_response("fields cannot be empty ", StatusCodeEnums)
         else:
-            blog_post = blog_posts(author_id=_user_id, title=_title, content=_content,
+            blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
                                    category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
             blog_post.save()
             return make_response("success ", 200)
@@ -44,6 +44,7 @@ def add_post(current_user):
 # ------------------------------------------------------------
 # *like
 
+# *dislike
 
 @token_required
 def vote(current_user):
@@ -52,7 +53,7 @@ def vote(current_user):
     _author_id = json_body_form_data["author_id"]
     _vote_value = json_body_form_data["vote_value"]
 
-    blog_post = blog_posts.objects(id=_post_id).first()
+    blog_post = Blog_posts.objects(id=_post_id).first()
     post_vote_exists = blog_post_vote.objects(
         post_id=_post_id, author_id=_author_id).count() > 0
     if post_vote_exists:
@@ -109,7 +110,7 @@ def vote(current_user):
 def delete_post(current_user, post_id):
     if request.method == "DELETE":
 
-        post = blog_posts.objects(id=post_id)
+        post = Blog_posts.objects(id=post_id)
         post.delete()
         return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
 # ------------------------------------------------------------
@@ -141,7 +142,7 @@ def add_category():
 @token_required
 def posts(current_user):
     posts = []
-    for post in blog_posts.objects():
+    for post in Blog_posts.objects():
         post["like"] = blog_post_vote.objects(post_id=post.id,
                                               vote_value=1).count()
         post["dislike"] = blog_post_vote.objects(post_id=post.id,
@@ -170,7 +171,7 @@ def blog_post_categories(current_user):
 def single_post(current_user, param_post_id):
     response = []
     # try:
-    post = blog_posts.objects(id=param_post_id).first()
+    post = Blog_posts.objects(id=param_post_id).first()
     # post["like"] = blog_post_vote.objects(post_id=param_post_id,
     #                                       vote_value=1).count()
 
@@ -230,7 +231,7 @@ def group_test():
         {"$group": {"_id": "637a1494401d77d7338bdf9e", }}
     ]
     #
-    docs = blog_posts.objects().aggregate(pipeline)
+    docs = Blog_posts.objects().aggregate(pipeline)
     response = []
     for doc in docs:
         response.append(doc)
