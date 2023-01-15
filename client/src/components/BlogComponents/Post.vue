@@ -11,18 +11,23 @@
         <v-chip class="ma-2" color="secondary">
           {{ postDetail.author_username }}
         </v-chip>
+        <!-- 1 like -->
         <v-chip outlined class="mx-2" @click="votePost(1)">
           <v-avatar left>
             <v-icon icon color="success" small>mdi-thumb-up</v-icon>
           </v-avatar>
           {{ postDetail.like }}
         </v-chip>
+        <!-- 2 dislike -->
         <v-chip outlined class="mx-2" @click="votePost(2)">
           <v-avatar left>
             <v-icon color="error" small>mdi-thumb-down</v-icon>
           </v-avatar>
           {{ postDetail.dislike }}
         </v-chip>
+                    <v-btn v-if="isUser" color="error" icon @click="deletePost(post_id)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
       </v-col>
     </v-row>
 
@@ -40,9 +45,8 @@
               contain
               :src="postDetail.img_base64"
             ></v-img>
-            <v-btn color="error" icon @click="deletePost(post_id)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+          
+
           </v-col>
         </v-row>
         <v-row v-for="(item, index) in comments" :key="index">
@@ -103,6 +107,7 @@ export default {
       postDetail: {},
       comments: [],
       categories: [],
+      isUser: false,
       post_id: this.$route.params.postID,
       newCommentContent: "",
     };
@@ -119,6 +124,12 @@ export default {
     getPost() {
       this.axios.get("blog_posts/" + this.post_id).then((response) => {
         this.postDetail = response.data[0];
+        if (this.currentUser.uid.$oid === this.postDetail.author_id.$oid) {
+          this.isUser = true;
+        }
+        else {
+          this.isUser = false;
+        }
         this.display();
       });
     },
