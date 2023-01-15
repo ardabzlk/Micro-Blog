@@ -108,11 +108,18 @@ def vote(current_user):
 
 @token_required
 def delete_post(current_user, post_id):
-    if request.method == "DELETE":
+    post = Blog_posts.objects(id=post_id).first()
 
-        post = Blog_posts.objects(id=post_id)
-        post.delete()
-        return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
+
+    if request.method == "DELETE":
+        # check if the user is the author of the post
+        if current_user.id != post.author_id:
+            return make_response("You are not authorized to delete this post", StatusCodeEnums.stat3["code"])
+        else:
+            post.delete()
+            return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
+    else:
+        return make_response("Invalid request", StatusCodeEnums.stat2["code"])
 # ------------------------------------------------------------
 # ------------------------------------------------------------
 # *add blog category
