@@ -44,6 +44,7 @@ def add_post(current_user):
 # ------------------------------------------------------------
 # *like
 
+# *dislike
 
 @token_required
 def vote(current_user):
@@ -52,7 +53,7 @@ def vote(current_user):
     _author_id = json_body_form_data["author_id"]
     _vote_value = json_body_form_data["vote_value"]
 
-    blog_post = blog_posts.objects(id=_post_id).first()
+    blog_post = Blog_posts.objects(id=_post_id).first()
     post_vote_exists = blog_post_vote.objects(
         post_id=_post_id, author_id=_author_id).count() > 0
     if post_vote_exists:

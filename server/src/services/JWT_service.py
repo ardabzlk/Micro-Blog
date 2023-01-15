@@ -5,10 +5,11 @@ from src.models.user_model import User
 import json
 
 
-with open('config.json', 'r') as f:
-    config = json.load(f)
+# with open('config.json', 'r') as f:
+#     config = json.load(f)
 
-secret_key = config["SECRET_KEY"]
+# secret_key = config["SECRET_KEY"]
+secret_key = "micro-blog-playground"
 
 
 def token_required(f):
