@@ -25,7 +25,7 @@
           </v-avatar>
           {{ postDetail.dislike }}
         </v-chip>
-                    <v-btn v-if="isUser" color="error" icon @click="deletePost(post_id)">
+              <v-btn v-if="isUser" color="error" icon @click="deletePost(post_id)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
       </v-col>
@@ -65,6 +65,7 @@
           </v-col>
           <v-col sm="12" md="12" class="text-right">
             <v-btn
+              v-if="currentUser.uid.$oid === item.author_id.$oid"
               color="error"
               icon
               @click="deletePostComments(item._id.$oid)"
@@ -108,6 +109,7 @@ export default {
       comments: [],
       categories: [],
       isUser: false,
+      isCommentUser: false,
       post_id: this.$route.params.postID,
       newCommentContent: "",
     };

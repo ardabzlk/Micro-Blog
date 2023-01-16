@@ -201,6 +201,7 @@ def blog_post_categories(current_user):
 # ------------------------------------------------------------
 # *comment
 
+
 @token_required
 def comment(current_user, comment_id):
     response = []
@@ -225,11 +226,15 @@ def comment(current_user, comment_id):
             new_comment.save()
             return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
     elif request.method == "DELETE":
+
         json_body_form_data = request.get_json()
         _comment_id = json_body_form_data["id"]
-        post = blog_post_comment.objects(id=_comment_id).first()
-        post.delete()
-        return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
+        post_comment = blog_post_comment.objects(id=_comment_id).first()
+        if current_user.id != post_comment.author_id:
+            return make_response(StatusCodeEnums.stat3["msg"], StatusCodeEnums.stat3["code"])
+        else:
+            post_comment.delete()
+            return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
     else:
         return make_response(StatusCodeEnums.stat2["msg"], StatusCodeEnums.stat2["code"])
 
