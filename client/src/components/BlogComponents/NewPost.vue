@@ -89,7 +89,7 @@ export default {
       };
       axios({
         method: "post",
-        baseURL: "http://127.0.0.1:8000/blog_posts/add",
+        baseURL: "http://127.0.0.1:8000/blog-posts/-1",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",

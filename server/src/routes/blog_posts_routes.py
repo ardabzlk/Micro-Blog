@@ -11,7 +11,7 @@ from src.models.models import StatusCodeEnums
 # ------------------------------------------------------------
 # create new post
 @token_required
-def add_post(current_user):
+def posts_crud(current_user, param_post_id):
     # user_id
     # title
     # content
@@ -19,24 +19,70 @@ def add_post(current_user):
     # category_id
     # # to save the instance to the mongoDB collection = >
     try:
-        json_form_data = request.get_json()
-        _user_id = json_form_data.get("user_id")
-        _username = json_form_data.get("username")
-        _title = json_form_data.get("title")
-        _content = json_form_data.get("content")
-        _category_id = json_form_data.get("category_id")
-        _img_base64 = json_form_data.get("img_base64")
-        _date = datetime.datetime.today()
-        if (len(_user_id) == 0 or
-            len(_title) == 0 or
-                len(_content) == 0 or
-                _category_id == None):
-            return make_response("fields cannot be empty ", StatusCodeEnums)
-        else:
-            blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
-                                   category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
-            blog_post.save()
-            return make_response("success ", 200)
+        # add new blog post
+        # *POST
+        if request.method == "POST":
+            json_form_data = request.get_json()
+            _user_id = json_form_data.get("user_id")
+            _username = json_form_data.get("username")
+            _title = json_form_data.get("title")
+            _content = json_form_data.get("content")
+            _category_id = json_form_data.get("category_id")
+            _img_base64 = json_form_data.get("img_base64")
+            _date = datetime.datetime.today()
+            if (len(_user_id) == 0 or
+                len(_title) == 0 or
+                    len(_content) == 0 or
+                    _category_id == None):
+                return make_response("fields cannot be empty ", StatusCodeEnums)
+            else:
+                blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
+                                       category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
+                blog_post.save()
+                res = {}
+                res["msg"] = "success"
+                res["data"] = blog_post.id
+                print(res)
+                res = json.dumps(res, default=json_util.default)
+                return make_response(res,  StatusCodeEnums.stat0["code"])
+        # get single post
+        # *GET
+        elif request.method == "GET":
+            response = []
+            post = Blog_posts.objects(id=param_post_id).first()
+            response.append(post)
+            return make_response(response,  StatusCodeEnums.stat0["code"])
+        # update post
+        # *PUT
+        elif request.method == "PUT":
+            blog_post = Blog_posts.objects(id=param_post_id).first()
+
+            if current_user.id != blog_post.author_id:
+                return make_response("You are not authorized to update this post", StatusCodeEnums.stat3["code"])
+            else:
+                json_form_data = request.get_json()
+                _title = json_form_data.get("title")
+                _content = json_form_data.get("content")
+                _category_id = json_form_data.get("category_id")
+                _img_base64 = json_form_data.get("img_base64")
+                _date = datetime.datetime.today()
+                if len(_title) == 0 or len(_content) == 0 or _category_id == None:
+                    return make_response("fields cannot be empty ", StatusCodeEnums.stat2["code"])
+                else:
+                    blog_post.update(title=_title, content=_content,
+                                     category_id=_category_id, date=_date, img_base64=_img_base64)
+                    return make_response("success ",  StatusCodeEnums.stat0["code"])
+
+        # delete post
+        # *DELETE
+        elif request.method == "DELETE":
+            blog_post = Blog_posts.objects(id=param_post_id).first()
+            if current_user.id != blog_post.author_id:
+                return make_response("You are not authorized to update this post", StatusCodeEnums.stat3["code"])
+            else:
+                blog_post.delete()
+                return make_response("success ",  StatusCodeEnums.stat0["code"])
+
     except:
         raise InvalidUsage("This view is gone", status_code=410)
 # ------------------------------------------------------------
@@ -45,6 +91,7 @@ def add_post(current_user):
 # *like
 
 # *dislike
+
 
 @token_required
 def vote(current_user):
@@ -99,28 +146,9 @@ def vote(current_user):
         # json_data = json.loads(json_data_w_backslashes)
 
     return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-    # postun içinde aynı kullanıcının vote varsa güncellenecek yoksa eklenecek
 
 # ------------------------------------------------------------
-# ------------------------------------------------------------
-# *delete post
 
-
-@token_required
-def delete_post(current_user, post_id):
-    post = Blog_posts.objects(id=post_id).first()
-
-
-    if request.method == "DELETE":
-        # check if the user is the author of the post
-        if current_user.id != post.author_id:
-            return make_response("You are not authorized to delete this post", StatusCodeEnums.stat3["code"])
-        else:
-            post.delete()
-            return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-    else:
-        return make_response("Invalid request", StatusCodeEnums.stat2["code"])
-# ------------------------------------------------------------
 # ------------------------------------------------------------
 # *add blog category
 
@@ -171,29 +199,7 @@ def blog_post_categories(current_user):
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-# *get post details
-
-
-@token_required
-def single_post(current_user, param_post_id):
-    response = []
-    # try:
-    post = Blog_posts.objects(id=param_post_id).first()
-    # post["like"] = blog_post_vote.objects(post_id=param_post_id,
-    #                                       vote_value=1).count()
-
-    # post["dislike"] = blog_post_vote.objects(post_id=param_post_id,
-    #                                          vote_value=2).count()
-    # # post = user.to_json()
-    response.append(post)
-
-    return make_response(response, 200)
-    # except:
-    #     response["data"] = "User not found"
-    #     response["status"] = 404
-    #     return make_response(response, 404)
-# ------------------------------------------------------------
-
+# *comment
 
 @token_required
 def comment(current_user, comment_id):
@@ -229,20 +235,4 @@ def comment(current_user, comment_id):
 
 # ------------------------------------------------------------
 
-
-# test
-
-
-def group_test():
-    pipeline = [
-        {"$group": {"_id": "637a1494401d77d7338bdf9e", }}
-    ]
-    #
-    docs = Blog_posts.objects().aggregate(pipeline)
-    response = []
-    for doc in docs:
-        response.append(doc)
-    json_data_w_backslashes = json_util.dumps(response)
-    json_data = json.loads(json_data_w_backslashes)
-
-    return make_response(json_data)
+# ------------------------------------------------------------

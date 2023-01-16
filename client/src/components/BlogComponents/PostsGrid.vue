@@ -124,27 +124,12 @@ export default {
       });
     },
     posts() {
-      this.axios.get("blog_posts").then((response) => {
+      this.axios.get("blog-posts").then((response) => {
         this.postList = response.data;
         this.isLoading = false;
       });
     },
-    deletePost(_id) {
-      const bodyFormData = {
-        id: _id,
-      };
-      this.axios({
-        method: "delete",
-        url: "blog_posts/" + _id,
-        data: JSON.stringify(bodyFormData),
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }).then(() => {
-        this.posts();
-      });
-    },
+
   },
   computed: {
     ...mapGetters(["currentUser"]),

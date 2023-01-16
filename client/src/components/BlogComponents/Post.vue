@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     getPost() {
-      this.axios.get("blog_posts/" + this.post_id).then((response) => {
+      this.axios.get("blog-posts/" + this.post_id).then((response) => {
         this.postDetail = response.data[0];
         if (this.currentUser.uid.$oid === this.postDetail.author_id.$oid) {
           this.isUser = true;
@@ -223,11 +223,12 @@ export default {
       };
       this.axios({
         method: "delete",
-        url: "blog_posts/" + _id,
+        url: "blog-posts/" + _id,
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "Access-Control-Allow-Origin": "*"
         },
       }).then(() => {
         this.$router.push({ name: "Posts" });
