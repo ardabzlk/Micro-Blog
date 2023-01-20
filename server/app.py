@@ -7,7 +7,6 @@ from src.routes.auth.login_register_routes import login, register
 from src.routes.blog_posts_routes import posts_crud, posts, blog_post_categories, comment, vote
 from flask_cors import CORS
 from src.models.models import db
-from api_constants import mongo_password, mongo_user
 
 import os
 
@@ -28,10 +27,8 @@ app.config['SECRET_KEY'] = config["SECRET_KEY"]
 db.init_app(app)
 db.disconnect()
 
-user = mongo_user
-password = mongo_password
-DB_URI = "mongodb+srv://{}:{}@cluster0.ldccoab.mongodb.net/{}?retryWrites=true&w=majority".format(user,
-                                                                                                  password, config["DB_NAME"])
+
+DB_URI = config["DB_URI"]
 db.connect(host=DB_URI)
 
 # ----------------------------------------------------
