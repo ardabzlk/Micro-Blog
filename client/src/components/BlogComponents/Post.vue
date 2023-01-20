@@ -157,7 +157,7 @@ export default {
       });
     },
     getBlogCategories() {
-      this.axios.get("blog_posts/categories").then((response) => {
+      this.axios.get("blog-posts/categories").then((response) => {
         this.categories = response.data;
       });
     },
@@ -209,13 +209,7 @@ export default {
       }).then((response) => {
         if (response.status == 200) {
           this.getPost();
-          // if (_vote_value == 1) {
-          //   this.postList.like += 1;
-          //   this.postList.dislike -= 1;
-          // } else if (_vote_value == 2) {
-          //   this.postList.dislike += 1;
-          //   this.postList.like -= 1;
-          // }
+
         }
       });
     },

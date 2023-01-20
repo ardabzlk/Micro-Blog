@@ -125,7 +125,7 @@ export default {
     },
     posts() {
       this.axios.get("blog-posts").then((response) => {
-        this.postList = response.data;
+        this.postList = response.data.data;
         this.isLoading = false;
       });
     },

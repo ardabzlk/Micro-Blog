@@ -4,7 +4,7 @@ from flask import Flask
 # This extension adds a toolbar overlay to Flask applications containing useful information for debugging. =>
 from src.routes.user_routes import users, singleton_user
 from src.routes.auth.login_register_routes import login, register
-from src.routes.blog_posts_routes import posts_crud, posts, blog_post_categories, comment, vote
+from src.routes.blog_posts_routes import post_management, posts, blog_post_categories, comment, vote
 from flask_cors import CORS
 from src.models.models import db
 
@@ -49,13 +49,16 @@ app.add_url_rule("/users/<uid>",
 # ----------------------------------------------------
 # ----------------------------------------------------
 # * Blog Posts routes start
-app.add_url_rule("/blog-posts/<param_post_id>", view_func=posts_crud,
-                 methods=["GET", "POST", "DELETE", "PUT"])
+app.add_url_rule("/blog-posts", view_func=posts,
+                 methods=["GET", "POST"])
+
+app.add_url_rule("/blog-posts/<param_post_id>", view_func=post_management,
+                 methods=["GET", "DELETE", "PUT"])
 # all posts
 app.add_url_rule("/blog-posts", view_func=posts,
                  methods=["GET"])
 # blog categories
-app.add_url_rule("/blog_posts/categories", view_func=blog_post_categories,
+app.add_url_rule("/blog-posts/categories", view_func=blog_post_categories,
                  methods=["GET"])
 # blog comment
 app.add_url_rule("/comment/<comment_id>", view_func=comment,

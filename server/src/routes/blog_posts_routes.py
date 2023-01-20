@@ -5,13 +5,13 @@ from src.services.Exceptions import InvalidUsage
 from src.services.JWT_service import token_required
 from bson import json_util
 import json
-from src.models.models import StatusCodeEnums
+from src.models.models import StatusCodeEnums, ResponseModel
 
 
 # ------------------------------------------------------------
-# create new post
+# */blog_posts/<param_post_id>
 @token_required
-def posts_crud(current_user, param_post_id):
+def post_management(current_user, param_post_id):
     # user_id
     # title
     # content
@@ -20,34 +20,9 @@ def posts_crud(current_user, param_post_id):
     # # to save the instance to the mongoDB collection = >
     try:
         # add new blog post
-        # *POST
-        if request.method == "POST":
-            json_form_data = request.get_json()
-            _user_id = json_form_data.get("user_id")
-            _username = json_form_data.get("username")
-            _title = json_form_data.get("title")
-            _content = json_form_data.get("content")
-            _category_id = json_form_data.get("category_id")
-            _img_base64 = json_form_data.get("img_base64")
-            _date = datetime.datetime.today()
-            if (len(_user_id) == 0 or
-                len(_title) == 0 or
-                    len(_content) == 0 or
-                    _category_id == None):
-                return make_response("fields cannot be empty ", StatusCodeEnums)
-            else:
-                blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
-                                       category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
-                blog_post.save()
-                res = {}
-                res["msg"] = "success"
-                res["data"] = blog_post.id
-                print(res)
-                res = json.dumps(res, default=json_util.default)
-                return make_response(res,  StatusCodeEnums.stat0["code"])
         # get single post
         # *GET
-        elif request.method == "GET":
+        if request.method == "GET":
             response = []
             post = Blog_posts.objects(id=param_post_id).first()
             response.append(post)
@@ -86,7 +61,49 @@ def posts_crud(current_user, param_post_id):
     except:
         raise InvalidUsage("This view is gone", status_code=410)
 # ------------------------------------------------------------
+# */blog_posts
 
+
+@token_required
+def posts(current_user):
+    # *POST
+    # add new blog post
+    if request.method == "POST":
+        json_form_data = request.get_json()
+        _user_id = json_form_data.get("user_id")
+        _username = json_form_data.get("username")
+        _title = json_form_data.get("title")
+        _content = json_form_data.get("content")
+        _category_id = json_form_data.get("category_id")
+        _img_base64 = json_form_data.get("img_base64")
+        _date = datetime.datetime.today()
+        if len(_user_id) == 0 or len(_title) == 0 or len(_content) == 0 or len(_username) == 0 or _category_id == None:
+            response = ResponseModel(
+                StatusCodeEnums.stat2["code"], StatusCodeEnums.stat2["msg"], "fields cannot be empty")
+            return response.get_response()
+        else:
+            blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
+                                   category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
+            blog_post.save()
+            data = []
+            data.append(blog_post)
+            response = ResponseModel(
+                StatusCodeEnums.stat0["code"],  StatusCodeEnums.stat0["msg"], blog_post)
+            return response.get_response()
+    # *GET
+    # get all posts
+    elif request.method == "GET":
+        data = []
+        for post in Blog_posts.objects():
+            post["like"] = blog_post_vote.objects(post_id=post.id,
+                                                  vote_value=1).count()
+            post["dislike"] = blog_post_vote.objects(post_id=post.id,
+                                                     vote_value=2).count()
+            data.append(post)
+
+        response = ResponseModel(
+            StatusCodeEnums.stat0["code"],  StatusCodeEnums.stat0["msg"], data)
+        return response.get_response()
 # ------------------------------------------------------------
 # *like
 
@@ -170,21 +187,7 @@ def add_category():
         raise InvalidUsage("This view is gone", status_code=410)
 # ------------------------------------------------------------
 
-# ------------------------------------------------------------
-# *get all posts
 
-
-@token_required
-def posts(current_user):
-    posts = []
-    for post in Blog_posts.objects():
-        post["like"] = blog_post_vote.objects(post_id=post.id,
-                                              vote_value=1).count()
-        post["dislike"] = blog_post_vote.objects(post_id=post.id,
-                                                 vote_value=2).count()
-        posts.append(post)
-    return make_response(posts)
-# ------------------------------------------------------------
 
 # ------------------------------------------------------------
 # *get blog categories
