@@ -15,10 +15,10 @@
           <v-data-table
             :headers="headers"
             :items="userList"
-            
+            @click:row="goToProfile"
             :search="search"
             :items-per-page="5"
-            class="elevation-1"
+            class="elevation-1 cursor-pointer"
           ></v-data-table>
         </v-card>
       </v-col>
@@ -46,6 +46,10 @@ export default {
     this.getUserList();
   },
   methods: {
+    goToProfile(item) {
+      this.$router.push({ name: "Profile", params: { userID: item._id.$oid } });
+      console.log(item);
+    },
     getUserList() {
       let data = {
         headers: {

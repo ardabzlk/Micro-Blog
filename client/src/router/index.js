@@ -29,7 +29,7 @@ const routes = [
         },
       },
       {
-        path: "/profile",
+        path: "/profile/:userID",
         name: "Profile",
         component: () => import("@/views/ProfileViews/ProfileView.vue"),
         meta: {

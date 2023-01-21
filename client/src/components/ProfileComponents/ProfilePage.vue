@@ -1,13 +1,6 @@
 <template>
   <v-container fluid class="profile-section">
-    <v-card max-width="800px" class="mx-auto bg" elevation="2">
-      <v-img
-        class=""
-        height="200px"
-        src="https://images.unsplash.com/photo-1454117096348-e4abbeba002c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-        gradient="150deg, rgb(185 224 255 / 58%) 0%, rgb(243 220 246 / 52%) 35%, rgb(223 255 242 / 74%) 74%"
-      >
-      </v-img>
+    <v-card class="mx-auto mt-6 pt-6" elevation="0  ">
       <v-row justify="center">
         <v-col
           align-self="start"
@@ -19,39 +12,31 @@
             color="grey"
             size="164"
           >
-            <v-btn  class="upload-btn" x-large icon>
-              <v-icon> mdi-camera </v-icon>
-            </v-btn>
-
-            <v-img
-              src="https://firebasestorage.googleapis.com/v0/b/ardabozlak-aa91c.appspot.com/o/pic%2Fi01_1651534925173.jpeg?alt=media&token=74141753-9687-44ce-b657-50e764a4610c"
-            ></v-img>
+            <v-icon x-large>mdi-account</v-icon>
           </v-avatar>
         </v-col>
       </v-row>
-      <v-list-item color="#0000" class="profile-text-name ma-4 pt-16">
-        <v-list-item-content>
-          <v-list-item-title class="text-h6"> {{this.currentUser.username}} </v-list-item-title>
-          <v-list-item-subtitle>Student</v-list-item-subtitle>
-        </v-list-item-content>
-
-      </v-list-item>
-
-
-      <v-spacer></v-spacer>
-      <v-text-field
-        class="pa-6"
-        v-model="this.currentUser.email"
-        prepend-icon="mdi-gmail"
-        label="Mail"
-        disabled
-      ></v-text-field>
-      <v-spacer></v-spacer>
-
+      <v-row justify="center">
+        <v-col>
+          <h2 class="text-center">
+            {{ this.userDetails.username }}
+          </h2>
+        </v-col>
+      </v-row>
+      <v-row class="d-flex justify-center" >
+        <v-col cols="4">
+          <v-text-field
+            v-model="this.userDetails.email"
+            prepend-icon="mdi-gmail"
+            label="Mail"
+            disabled
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="6" class="text-end">
           <v-list-item-content class="sutitles">
-            <v-list-item-title class="text-h6"> 2 </v-list-item-title>
+            <v-list-item-title class="text-h6"> {{postList.length}} </v-list-item-title>
             <v-list-item-subtitle class="text-caption"
               >Posts</v-list-item-subtitle
             >
@@ -59,11 +44,59 @@
         </v-col>
         <v-col cols="6" class="text-start">
           <v-list-item-content class="sutitles">
-            <v-list-item-title class="text-h6"> 10 </v-list-item-title>
+            <v-list-item-title class="text-h6"> {{total_like }} </v-list-item-title>
             <v-list-item-subtitle class="text-caption"
               >Likes</v-list-item-subtitle
             >
           </v-list-item-content>
+        </v-col>
+      </v-row>
+      <v-row class="mt-5 px-0 mx-0" v-if="!isLoading">
+        <v-col
+          v-for="(item, index) in filteredList"
+          :key="index"
+          xs="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card max-width="420" max-height="340">
+            <v-img height="200" contain :src="item.img_base64"></v-img>
+            <v-card-title>
+              {{ item.title }}
+              <v-spacer></v-spacer>
+              <span class="blue-grey--text">
+                {{ item.author_username }}
+              </span>
+            </v-card-title>
+            <v-card-subtitle
+              class="d-inline-block text-truncate posts-grid__card-subt"
+            >
+              {{ item.content }}
+            </v-card-subtitle>
+            <v-card-actions>
+              <v-btn
+                color="orange lighten-2"
+                text
+                @click="toPostDetail(item._id.$oid)"
+              >
+                Explore
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-chip class="mx-2">
+                <v-avatar left>
+                  <v-icon icon color="success" small>mdi-thumb-up</v-icon>
+                </v-avatar>
+                {{ item.like }}
+              </v-chip>
+              <v-chip class="mx-2">
+                <v-avatar left>
+                  <v-icon color="error" small>mdi-thumb-down</v-icon>
+                </v-avatar>
+                {{ item.dislike }}
+              </v-chip>
+            </v-card-actions>
+          </v-card>
         </v-col>
       </v-row>
     </v-card>
@@ -78,14 +111,75 @@ export default {
 
   data() {
     return {
-
+      token: localStorage.getItem("id_token"),
+      postList: [],
+      userDetails: {},
+      keyword: "",
+      isLoading: false,
+      total_like: 0,
     };
+  },
+  async created() {
+    await this.posts();
+  },
+  mounted() {
+    this.getUserDetail();
+  },
+  methods: {
+    toPostDetail(_post_id) {
+      this.$router.push({
+        name: "Post",
+        params: { postID: _post_id },
+      });
+    },
+    async posts() {
+      this.axios
+        .get("users/" + this.$route.params.userID + "/blog_posts")
+        .then((response) => {
+          this.postList = response.data.data;
+          this.isLoading = false;
+          return this.postList;
+        })
+        .then(() => {
+          this.postList.map((post) => {
+            if (post.like) {
+              this.total_like += post.like;
+            }
+          });
+        });
+    },
+    getUserDetail() {
+      this.axios
+        .get("users/" + this.$route.params.userID)
+        .then((response) => {
+          this.userDetails = response.data.data[0];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    count() {
+      this.postList.map((post) => {
+        if (post.like) {
+          this.total_like += post.like;
+        }
+
+      });
+    },
   },
 
   computed: {
     ...mapState({
       errors: (state) => state.auth.errors,
     }),
+    filteredList() {
+      return this.postList.filter((post) => {
+        return this.keyword
+          .toLowerCase()
+          .split(" ")
+          .every((v) => post.title.toLowerCase().includes(v));
+      });
+    },
     ...mapGetters(["currentUser"]),
   },
 };

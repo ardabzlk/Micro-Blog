@@ -26,14 +26,16 @@
         <v-list>
           <v-list-item>
             <v-list-item-title>
-              <router-link
-                to="/profile"
-                class="text-decoration-none cursor-pointer"
-              >
-                <div class="secondary--text font-weight-black">
+             
+        
+             
+                <div class="secondary--text font-weight-black cursor-pointer"
+                        @click="goToProfile(currentUser)"
+            
+                >
                   {{ this.currentUser.username }}
                 </div>
-              </router-link></v-list-item-title
+           </v-list-item-title
             ></v-list-item
           >
 
@@ -83,6 +85,10 @@ export default {
     logout() {
       this.$store.dispatch(LOGOUT);
       this.$router.push("Login");
+    },
+        goToProfile(item) {
+      this.$router.push({ name: "Profile", params: { userID: item.uid.$oid } });
+      console.log(item);
     },
   },
 
