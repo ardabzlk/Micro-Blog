@@ -7,7 +7,7 @@ from src.models.models import db
 # User collection
 
 
-class User(db.Document):
+class users(db.Document):
     """
     User model for user collection
     user_id

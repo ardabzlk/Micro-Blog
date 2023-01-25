@@ -1,5 +1,5 @@
-from src.models.user_model import User
-from src.models.blog_posts_model import Blog_posts
+from src.models.user_model import users
+from src.models.blog_posts_model import blogPosts
 from src.models.models import StatusCodeEnums
 from flask import make_response, request
 from src.services.JWT_service import token_required
@@ -9,9 +9,9 @@ from src.services.JWT_service import token_required
 
 
 @token_required
-def users(current_user):
+def list_users(current_user):
     userList = []
-    for user in User.objects():
+    for user in users.objects():
         userList.append(user)
     return make_response(userList)
 # ------------------------------------------------------------
@@ -24,7 +24,7 @@ def users(current_user):
 def singleton_user(current_user, uid):
     response = {}
     try:
-        user = User.objects(id=uid).first()
+        user = users.objects(id=uid).first()
         user = user.to_json()
         response["data"] = user
         response["status"] = 200
@@ -46,7 +46,7 @@ def user_posts(current_user, uid):
     response = {}
     if request.method == "GET":
         try:
-            posts = Blog_posts.objects(author_id=uid)
+            posts = blogPosts.objects(author_id=uid)
             response["data"] = posts
             response["status"] = StatusCodeEnums.success["code"]
             response["msg"] = StatusCodeEnums.success["msg"]

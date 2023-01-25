@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import jsonify, request
 import jwt
-from src.models.user_model import User
+from src.models.user_model import users
 import json
 
 import os
@@ -31,7 +31,7 @@ def token_required(f):
         try:
             data = jwt.decode(token, secret_key,
                               algorithms=['HS256'])
-            current_user = User.objects(email=data.get('email')).first()
+            current_user = users.objects(email=data.get('email')).first()
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
         return f(current_user, *args, **kwargs)

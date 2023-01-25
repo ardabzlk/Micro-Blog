@@ -1,9 +1,10 @@
 from src.models.models import db
-# ----------------------------------------------
-# User collection
 
 
-class BlogPosts(db.Document):
+# db collection: blog_posts
+
+
+class blogPosts(db.Document):
 
     author_id = db.ObjectIdField(null=False, required=True, exists=True)
     author_username = db.StringField(null=False, required=True, exists=True)
@@ -15,14 +16,18 @@ class BlogPosts(db.Document):
     dislike = db.IntField()
     img_base64 = db.StringField(null=False, required=True, exists=True)
 
+# db collection: blog_categories
 
-class BlogCategories(db.Document):
+
+class blogCategories(db.Document):
 
     category_id = db.IntField(null=False, required=True, exists=True)
     category_name = db.StringField(null=False, required=True, exists=True)
 
+# db collection: blog_post_comments
 
-class BlogPostComments(db.Document):
+
+class blogPostComments(db.Document):
     """
     user_id: id field
     post_id: id field
@@ -35,8 +40,11 @@ class BlogPostComments(db.Document):
     comment_content = db.StringField()
     vote_value: db.IntField()
 
+# db collection: blog_post_votes
 
-class BlogPostVotes(db.Document):
+
+class blogPostVotes(db.Document):
+
     """
     user_id: id field
     post_id: id field

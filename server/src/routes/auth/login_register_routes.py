@@ -1,7 +1,7 @@
 from flask import request, make_response
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
-from src.models.user_model import User
+from src.models.user_model import users
 from src.services.Exceptions import InvalidUsage
 import datetime
 import jwt
@@ -17,7 +17,7 @@ def register():
     token = None
     post_data = request.json
     body_form_data = request.get_json()
-    user_check = User.objects(email=body_form_data.get('email')).first()
+    user_check = users.objects(email=body_form_data.get('email')).first()
     try:
         if (len(body_form_data["name"]) == 0 or len(body_form_data["surname"]) == 0 or
                 len(body_form_data["username"]) == 0 or len(body_form_data["email"]) == 0 or
@@ -28,7 +28,7 @@ def register():
         else:
             hash_hassword = generate_password_hash(
                 body_form_data.get('password'), method='sha256')
-            user = User(name=body_form_data.get('name'),
+            user = users(name=body_form_data.get('name'),
                         surname=body_form_data.get('surname'), username=body_form_data.get('username'), password=hash_hassword, email=body_form_data.get('email'))
             user.save()
             token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
@@ -55,7 +55,7 @@ def login():
     elif not authUserEmail or not authPassword:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
     else:
-        user = User.objects(email=authUserEmail).first()
+        user = users.objects(email=authUserEmail).first()
 
         if not user:
             return make_response('No such user', 404, {'WWW-Authenticate': 'Basic realm="Login Required"'})
