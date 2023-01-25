@@ -200,7 +200,7 @@ export default {
       };
       this.axios({
         method: "post",
-        url: "rate",
+        url: "vote",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",
