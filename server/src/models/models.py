@@ -14,14 +14,26 @@ class StatusCodeEnums:
 
 
 class ResponseModel:
-    def __init__(self, status, msg, data):
-        self.status = status
-        self.msg = msg
+    def __init__(self, data=None):
         self.data = data
 
-    def get_response(self):
-        return {
-            "status": self.status,
-            "msg": self.msg,
+    def get_success_response(self):
+        return ({
+            "msg": StatusCodeEnums.success["msg"],
             "data": self.data
-        }
+        }, StatusCodeEnums.success["code"])
+
+    def get_not_found_response(self):
+        return ({
+            "msg": StatusCodeEnums.not_found["msg"],
+        }, StatusCodeEnums.not_found["code"])
+
+    def get_bad_request_response(self):
+        return ({
+            "msg": StatusCodeEnums.bad_request["msg"],
+        }, StatusCodeEnums.bad_request["code"])
+
+    def get_unauthorized_response(self):
+        return ({
+            "msg": StatusCodeEnums.unauthorized["msg"],
+        }, StatusCodeEnums.unauthorized["code"])

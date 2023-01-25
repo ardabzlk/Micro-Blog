@@ -72,18 +72,16 @@ def posts(current_user):
         _img_base64 = json_form_data.get("img_base64")
         _date = datetime.datetime.today()
         if len(_user_id) == 0 or len(_title) == 0 or len(_content) == 0 or len(_username) == 0 or _category_id == None:
-            response = ResponseModel(
-                StatusCodeEnums.bad_request["code"], StatusCodeEnums.bad_request["msg"], "fields cannot be empty")
-            return response.get_response()
+            response = ResponseModel()
+            return response.get_bad_request_response()
         else:
             blog_post = blogPosts(author_id=_user_id, title=_title, content=_content,
                                   category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
             blog_post.save()
             data = []
             data.append(blog_post)
-            response = ResponseModel(
-                StatusCodeEnums.success["code"],  StatusCodeEnums.success["msg"], blog_post)
-            return response.get_response()
+            response = ResponseModel(blog_post)
+            return response.get_success_response()
     # *GET
     # get all posts
     elif request.method == "GET":
@@ -95,9 +93,8 @@ def posts(current_user):
                                                          vote_value=2).count()
             data.append(blog_post)
 
-        response = ResponseModel(
-            StatusCodeEnums.success["code"],  StatusCodeEnums.success["msg"], data)
-        return response.get_response()
+        response = ResponseModel(data)
+        return response.get_success_response()
 # ------------------------------------------------------------
 # *like
 
