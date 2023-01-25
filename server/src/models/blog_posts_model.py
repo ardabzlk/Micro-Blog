@@ -3,12 +3,7 @@ from src.models.models import db
 # User collection
 
 
-class Test_Model(db.Document):
-    title = db.StringField()
-    text = db.StringField()
-
-
-class Blog_posts(db.Document):
+class BlogPosts(db.Document):
 
     author_id = db.ObjectIdField(null=False, required=True, exists=True)
     author_username = db.StringField(null=False, required=True, exists=True)
@@ -21,13 +16,13 @@ class Blog_posts(db.Document):
     img_base64 = db.StringField(null=False, required=True, exists=True)
 
 
-class blog_categories(db.Document):
+class BlogCategories(db.Document):
 
     category_id = db.IntField(null=False, required=True, exists=True)
     category_name = db.StringField(null=False, required=True, exists=True)
 
 
-class blog_post_comment(db.Document):
+class BlogPostComments(db.Document):
     """
     user_id: id field
     post_id: id field
@@ -41,7 +36,7 @@ class blog_post_comment(db.Document):
     vote_value: db.IntField()
 
 
-class blog_post_vote(db.Document):
+class BlogPostVotes(db.Document):
     """
     user_id: id field
     post_id: id field

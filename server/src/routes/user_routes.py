@@ -17,7 +17,7 @@ def users(current_user):
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-# get all user list
+# *get user by user id
 
 
 @token_required
@@ -48,13 +48,13 @@ def user_posts(current_user, uid):
         try:
             posts = Blog_posts.objects(author_id=uid)
             response["data"] = posts
-            response["status"] = StatusCodeEnums.stat0["code"]
-            response["msg"] = StatusCodeEnums.stat0["msg"]
+            response["status"] = StatusCodeEnums.success["code"]
+            response["msg"] = StatusCodeEnums.success["msg"]
             return make_response(response)
         except:
             response["data"] = "User not found"
-            response["status"] = StatusCodeEnums.stat1["code"]
-            response["msg"] = StatusCodeEnums.stat1["msg"]
+            response["status"] = StatusCodeEnums.not_found["code"]
+            response["msg"] = StatusCodeEnums.not_found["msg"]
             return make_response(response)
 
 """

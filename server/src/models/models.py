@@ -4,11 +4,11 @@ db = MongoEngine()
 
 
 class StatusCodeEnums:
-    stat0 = {"msg": "Success", "code": 200}
-    stat1 = {"msg": "Not found", "code": 404}
-    stat2 = {"msg": "Invalid Request", "code": 400}
-    stat3 = {"msg": "Unauthorized", "code": 401}
-    stat4 = {"msg": "Something went wrong", "code": 400}
+    success = {"msg": "Success", "code": 200}
+    not_found = {"msg": "Not found", "code": 404}
+    bad_request = {"msg": "Bad Request", "code": 400}
+    unauthorized = {"msg": "Unauthorized", "code": 401}
+    gone = {"msg": "Gone", "code": 410}
 
 # global response model
 
