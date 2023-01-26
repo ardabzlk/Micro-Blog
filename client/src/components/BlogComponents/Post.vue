@@ -11,18 +11,23 @@
         <v-chip class="ma-2" color="secondary">
           {{ postDetail.author_username }}
         </v-chip>
+        <!-- 1 like -->
         <v-chip outlined class="mx-2" @click="votePost(1)">
           <v-avatar left>
             <v-icon icon color="success" small>mdi-thumb-up</v-icon>
           </v-avatar>
           {{ postDetail.like }}
         </v-chip>
+        <!-- 2 dislike -->
         <v-chip outlined class="mx-2" @click="votePost(2)">
           <v-avatar left>
             <v-icon color="error" small>mdi-thumb-down</v-icon>
           </v-avatar>
           {{ postDetail.dislike }}
         </v-chip>
+        <v-btn v-if="isUser" color="error" icon @click="deletePost(post_id)">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -40,9 +45,6 @@
               contain
               :src="postDetail.img_base64"
             ></v-img>
-            <v-btn color="error" icon @click="deletePost(post_id)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
           </v-col>
         </v-row>
         <v-row v-for="(item, index) in comments" :key="index">
@@ -117,8 +119,8 @@ export default {
   },
   methods: {
     getPost() {
-      this.axios.get("blog_posts/" + this.post_id).then((response) => {
-        this.postDetail = response.data[0];
+      this.axios.get("blog-posts/" + this.post_id).then((response) => {
+        this.postDetail = response.data.data[0];
         this.display();
       });
     },
@@ -144,8 +146,8 @@ export default {
       });
     },
     getBlogCategories() {
-      this.axios.get("blog_posts/categories").then((response) => {
-        this.categories = response.data;
+      this.axios.get("blog-posts/categories").then((response) => {
+        this.categories = response.data.data;
       });
     },
     display() {
@@ -187,7 +189,7 @@ export default {
       };
       this.axios({
         method: "post",
-        url: "rate",
+        url: "vote",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",
@@ -196,13 +198,6 @@ export default {
       }).then((response) => {
         if (response.status == 200) {
           this.getPost();
-          // if (_vote_value == 1) {
-          //   this.postList.like += 1;
-          //   this.postList.dislike -= 1;
-          // } else if (_vote_value == 2) {
-          //   this.postList.dislike += 1;
-          //   this.postList.like -= 1;
-          // }
         }
       });
     },
@@ -212,7 +207,7 @@ export default {
       };
       this.axios({
         method: "delete",
-        url: "blog_posts/" + _id,
+        url: "blog-posts/" + _id,
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",

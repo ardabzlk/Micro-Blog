@@ -1,24 +1,103 @@
 from flask import request, make_response
-from src.models.blog_posts_model import Blog_posts, blog_categories, blog_post_comment, blog_post_vote
+from src.models.blog_posts_model import BlogPosts, BlogCategories, BlogPostComments, BlogPostVotes
 import datetime
-from src.services.Exceptions import InvalidUsage
 from src.services.JWT_service import token_required
-from bson import json_util
-import json
-from src.models.models import StatusCodeEnums
+from src.models.models import ResponseModel
 
+"""
+def ExampleCRUDMethod():
+    if request.method == "POST":
+        # response model should be initialized at the beginning of the statement
+        response = ResponseModel()
+        if request_is_successfull:
+            data = "succesfully added"
+            # data should be added to the response model before returning it
+            response.data = data
+            # return the response model with the success message and 200 status code
+            return response.get_success_response()
+        else:
+            # return the response model with the bad request message and 400 status code
+            return response.get_bad_request_response()
+    
+    elif request.method == "GET":
+        response = ResponseModel()
+        if request_is_successfull:
+            data = db.objects().all()
+            response.data = data
+            return response.get_success_response()
+
+"""
 
 # ------------------------------------------------------------
-# create new post
+# */blog_posts/<param_post_id>
+
+
 @token_required
-def add_post(current_user):
-    # user_id
-    # title
-    # content
-    # date
-    # category_id
-    # # to save the instance to the mongoDB collection = >
+def post_management(current_user, param_post_id):
+
     try:
+        # add new blog post
+        # get single post
+        # *GET
+        if request.method == "GET":
+            data = []
+            blog_post = BlogPosts.objects(id=param_post_id).first()
+            data.append(blog_post)
+            response = ResponseModel(data)
+            if (blog_post):
+                return response.get_success_response()
+            else:
+                response = ResponseModel()
+                return response.get_not_found_response()
+
+        # update post
+        # *PUT
+        elif request.method == "PUT":
+            blog_post = BlogPosts.objects(id=param_post_id).first()
+            response = ResponseModel()
+            # TODO: check if the user is the owner of the post
+            json_form_data = request.get_json()
+            _title = json_form_data.get("title")
+            _content = json_form_data.get("content")
+            _category_id = json_form_data.get("category_id")
+            _img_base64 = json_form_data.get("img_base64")
+            _date = datetime.datetime.today()
+            if len(_title) == 0 or len(_content) == 0 or _category_id == None:
+                return response.get_bad_request_response()
+            else:
+                blog_post.update(title=_title, content=_content,
+                                 category_id=_category_id, date=_date, img_base64=_img_base64)
+                data = []
+                data.append(blog_post)
+                response.data = data
+                return response.get_success_response()
+
+        # delete post
+        # *DELETE
+        elif request.method == "DELETE":
+            blog_post = BlogPosts.objects(id=param_post_id).first()
+            response = ResponseModel()
+
+            # TODO: check if the user is the owner of the post
+            blog_post.delete()
+            data = ["deleted successfully"]
+            data.append(blog_post)
+            response.data = data
+            return response.get_success_response()
+
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
+# ------------------------------------------------------------
+# */blog_posts
+
+
+@token_required
+def posts(current_user):
+    # *POST
+    # add new blog post
+    if request.method == "POST":
+        response = ResponseModel()
         json_form_data = request.get_json()
         _user_id = json_form_data.get("user_id")
         _username = json_form_data.get("username")
@@ -27,67 +106,79 @@ def add_post(current_user):
         _category_id = json_form_data.get("category_id")
         _img_base64 = json_form_data.get("img_base64")
         _date = datetime.datetime.today()
-        if (len(_user_id) == 0 or
-            len(_title) == 0 or
-                len(_content) == 0 or
-                _category_id == None):
-            return make_response("fields cannot be empty ", StatusCodeEnums)
+        if len(_user_id) == 0 or len(_title) == 0 or len(_content) == 0 or len(_username) == 0 or _category_id == None:
+            return response.get_bad_request_response()
         else:
-            blog_post = Blog_posts(author_id=_user_id, title=_title, content=_content,
-                                   category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
+            blog_post = BlogPosts(author_id=_user_id, title=_title, content=_content,
+                                  category_id=_category_id, date=_date, img_base64=_img_base64, author_username=_username)
             blog_post.save()
-            return make_response("success ", 200)
-    except:
-        raise InvalidUsage("This view is gone", status_code=410)
-# ------------------------------------------------------------
+            data = []
+            data.append(blog_post)
+            response.data = data
+            return response.get_success_response()
+    # *GET
+    # get all posts
+    elif request.method == "GET":
+        response = ResponseModel()
+        data = []
+        for blog_post in BlogPosts.objects():
+            blog_post["like"] = BlogPostVotes.objects(post_id=blog_post.id,
+                                                      vote_value=1).count()
+            blog_post["dislike"] = BlogPostVotes.objects(post_id=blog_post.id,
+                                                         vote_value=2).count()
+            data.append(blog_post)
 
+        response.data = data
+        return response.get_success_response()
 # ------------------------------------------------------------
 # *like
 
 # *dislike
 
+
 @token_required
 def vote(current_user):
+    response = ResponseModel()
     json_body_form_data = request.get_json()
     _post_id = json_body_form_data["post_id"]
     _author_id = json_body_form_data["author_id"]
     _vote_value = json_body_form_data["vote_value"]
 
-    blog_post = Blog_posts.objects(id=_post_id).first()
-    post_vote_exists = blog_post_vote.objects(
+    blog_post = BlogPosts.objects(id=_post_id).first()
+    post_vote_exists = BlogPostVotes.objects(
         post_id=_post_id, author_id=_author_id).count() > 0
     if post_vote_exists:
-        db_vote = blog_post_vote.objects.get(
+        db_vote = BlogPostVotes.objects.get(
             post_id=_post_id, author_id=_author_id)
-        # vote count geri alınacak
-        # maliyeti azaltabiliriz
-        # db +- transaction içinde gerçekleşmeli(consistency için)
         # 1 like
-        #
         _like = blog_post.like
         _dislike = blog_post.dislike
         if (_vote_value == 1 and db_vote.vote_value == 1):
             db_vote.delete()
             if _like > 0:
                 blog_post.update(like=_like - 1)
-            return make_response("vote deleted", StatusCodeEnums.stat0["code"])
+                response.data = "vote deleted"
+            return response.get_success_response()
         elif (_vote_value == 1 and db_vote.vote_value == 2):
             blog_post.update(like=_like+1, dislike=_dislike-1)
             db_vote.update(vote_value=_vote_value)
-            return make_response("vote deleted", StatusCodeEnums.stat0["code"])
+            response.data = "vote updated"
+            return response.get_success_response()
         elif (_vote_value == 2 and db_vote.vote_value == 2):
             db_vote.delete()
             if _dislike > 0:
                 blog_post.update(dislike=_dislike-1)
-            return make_response("vote deleted", StatusCodeEnums.stat0["code"])
+            response.data = "vote deleted"
+            return response.get_success_response()
         elif (_vote_value == 2 and db_vote.vote_value == 1):
             blog_post.update(like=_like-1, dislike=_dislike+1)
             db_vote.update(vote_value=_vote_value)
-            return make_response("vote updated", StatusCodeEnums.stat0["code"])
+            response.data = "vote updated"
+            return response.get_success_response()
         else:
-            return make_response(StatusCodeEnums.stat2["msg"], StatusCodeEnums.stat2["code"])
+            return response.get_bad_request_response()
     else:
-        user_vote = blog_post_vote(
+        user_vote = BlogPostVotes(
             post_id=_post_id, author_id=_author_id, vote_value=_vote_value)
         user_vote.save()
         if (_vote_value == 1):
@@ -95,61 +186,40 @@ def vote(current_user):
         elif (_vote_value == 2):
             blog_post.update(dislike=+1)
 
-        # json_data_w_backslashes = json_util.dumps(db_vote)
-        # json_data = json.loads(json_data_w_backslashes)
+        response.data = user_vote
+        return response.get_success_response()
 
-    return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-    # postun içinde aynı kullanıcının vote varsa güncellenecek yoksa eklenecek
 
 # ------------------------------------------------------------
-# ------------------------------------------------------------
-# *delete post
 
-
-@token_required
-def delete_post(current_user, post_id):
-    if request.method == "DELETE":
-
-        post = Blog_posts.objects(id=post_id)
-        post.delete()
-        return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-# ------------------------------------------------------------
 # ------------------------------------------------------------
 # *add blog category
 
 
 def add_category():
-    # user
-    # header
-    # content
-    # date
-    # # to save the instance to the mongoDB collection = >
+    """
+    temporary function to add blog categories
+    it doesnt have endpoint 
+    category_id = StringField(required=True)
+    category_name = StringField(required=True)
+    """
     try:
         body_form_data = request.get_json()
 
-        blog_post = blog_categories(category_id=body_form_data.get(
+        blog_post_category = BlogCategories(category_id=body_form_data.get(
             "category_id"), category_name=body_form_data.get("category_name"))
-        blog_post.save()
-        return make_response("success ", 200)
+        blog_post_category.save()
+        data = []
+        data.append(blog_post_category)
+        response = ResponseModel(data)
+        return response.get_success_response()
+
     except:
-        raise InvalidUsage("This view is gone", status_code=410)
-# ------------------------------------------------------------
+        response = ResponseModel()
+        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
-# *get all posts
 
-
-@token_required
-def posts(current_user):
-    posts = []
-    for post in Blog_posts.objects():
-        post["like"] = blog_post_vote.objects(post_id=post.id,
-                                              vote_value=1).count()
-        post["dislike"] = blog_post_vote.objects(post_id=post.id,
-                                                 vote_value=2).count()
-        posts.append(post)
-    return make_response(posts)
-# ------------------------------------------------------------
 
 # ------------------------------------------------------------
 # *get blog categories
@@ -157,85 +227,67 @@ def posts(current_user):
 
 @token_required
 def blog_post_categories(current_user):
-    post_categories = []
-    for category in blog_categories.objects():
-        post_categories.append(category)
-    return make_response(post_categories)
+    data = []
+    for category in BlogCategories.objects():
+        data.append(category)
+    response = ResponseModel(data)
+    return response.get_success_response()
+
+
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-# *get post details
-
-
-@token_required
-def single_post(current_user, param_post_id):
-    response = []
-    # try:
-    post = Blog_posts.objects(id=param_post_id).first()
-    # post["like"] = blog_post_vote.objects(post_id=param_post_id,
-    #                                       vote_value=1).count()
-
-    # post["dislike"] = blog_post_vote.objects(post_id=param_post_id,
-    #                                          vote_value=2).count()
-    # # post = user.to_json()
-    response.append(post)
-
-    return make_response(response, 200)
-    # except:
-    #     response["data"] = "User not found"
-    #     response["status"] = 404
-    #     return make_response(response, 404)
-# ------------------------------------------------------------
+# *comment
 
 
 @token_required
 def comment(current_user, comment_id):
-    response = []
-    if request.method == "GET":
-        comment = blog_post_comment.objects(post_id=comment_id)
-        response.append(comment)
-        return make_response(response, StatusCodeEnums.stat0["code"])
-    elif request.method == "POST":
-        json_body_form_data = request.get_json()
-        _post_id = json_body_form_data["post_id"]
-        _author_id = json_body_form_data["author_id"]
-        _author_username = json_body_form_data["author_username"]
-        _date = datetime.datetime.now()
-        _comment_content = json_body_form_data["comment_content"]
-        if (len(_post_id) == 0 or
-                len(_author_id) == 0 or
-                len(_comment_content) == 0):
-            return make_response(StatusCodeEnums.stat2["msg"], StatusCodeEnums.stat2["code"])
+    try:
+        data = []
+        if request.method == "GET":
+            # return all comments for a post
+            comment = BlogPostComments.objects(post_id=comment_id)
+            data.append(comment)
+            response = ResponseModel(data)
+            return response.get_success_response()
+        elif request.method == "POST":
+            # add comment to a post
+            response = ResponseModel()
+            json_body_form_data = request.get_json()
+            _post_id = json_body_form_data["post_id"]
+            _author_id = json_body_form_data["author_id"]
+            _author_username = json_body_form_data["author_username"]
+            _date = datetime.datetime.now()
+            _comment_content = json_body_form_data["comment_content"]
+            if (len(_post_id) == 0 or
+                    len(_author_id) == 0 or
+                    len(_comment_content) == 0):
+                return response.get_bad_request_response()
+            else:
+                new_comment = BlogPostComments(post_id=_post_id, author_id=_author_id,
+                                               date=_date, comment_content=_comment_content, author_username=_author_username)
+                new_comment.save()
+                data.append(new_comment)
+                response.data = data
+                return response.get_success_response()
+        elif request.method == "DELETE":
+            # delete comment
+            response = ResponseModel()
+            json_body_form_data = request.get_json()
+            _comment_id = json_body_form_data["id"]
+            post_comment = BlogPostComments.objects(id=_comment_id).first()
+            # TODO: check if the user is the author of the comment
+
+            post_comment.delete()
+            response.data = "comment deleted"
+            return response.get_success_response()
         else:
-            new_comment = blog_post_comment(post_id=_post_id, author_id=_author_id,
-                                            date=_date, comment_content=_comment_content, author_username=_author_username)
-            new_comment.save()
-            return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-    elif request.method == "DELETE":
-        json_body_form_data = request.get_json()
-        _comment_id = json_body_form_data["id"]
-        post = blog_post_comment.objects(id=_comment_id).first()
-        post.delete()
-        return make_response(StatusCodeEnums.stat0["msg"], StatusCodeEnums.stat0["code"])
-    else:
-        return make_response(StatusCodeEnums.stat2["msg"], StatusCodeEnums.stat2["code"])
+            response = ResponseModel()
+            return response.get_bad_request_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
 
-
-# test
-
-
-def group_test():
-    pipeline = [
-        {"$group": {"_id": "637a1494401d77d7338bdf9e", }}
-    ]
-    #
-    docs = Blog_posts.objects().aggregate(pipeline)
-    response = []
-    for doc in docs:
-        response.append(doc)
-    json_data_w_backslashes = json_util.dumps(response)
-    json_data = json.loads(json_data_w_backslashes)
-
-    return make_response(json_data)
+# ------------------------------------------------------------

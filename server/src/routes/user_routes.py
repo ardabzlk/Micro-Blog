@@ -1,5 +1,7 @@
-from src.models.user_model import User
-from flask import make_response
+from src.models.user_model import Users
+
+from src.models.models import ResponseModel
+
 from src.services.JWT_service import token_required
 
 # ------------------------------------------------------------
@@ -7,34 +9,35 @@ from src.services.JWT_service import token_required
 
 
 @token_required
-def users(current_user):
-    userList = []
-    for user in User.objects():
-        userList.append(user)
-    return make_response(userList)
+def list_users(current_user):
+    data = []
+    for user in Users.objects():
+        data.append(user)
+    response = ResponseModel(data)
+    return response.get_success_response()
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-# get all user list
+# *get user by user id
 
 
 @token_required
 def singleton_user(current_user, uid):
-    response = {}
-    try:
-        user = User.objects(id=uid).first()
-        user = user.to_json()
-        response["data"] = user
-        response["status"] = 200
 
-        return make_response(response)
+    try:
+        user = Users.objects(id=uid).first()
+        user = user.to_json()
+        data = user
+        response = ResponseModel(data)
+        return response.get_success_response()
     except:
-        response["data"] = "User not found"
-        response["status"] = 404
-        return make_response(response, 404)
+        response = ResponseModel()
+        return response.get_not_found_response()
 
 
 # ------------------------------------------------------------
+
+
 
 
 """
