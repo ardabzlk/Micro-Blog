@@ -3,7 +3,11 @@
     <v-app-bar app color="primary" class="mb-12" dark>
       <div class="d-flex align-center">
         <router-link to="/" class="cursor-pointer">
-        <v-img src="@/assets/logo-black.svg" max-height="80" max-width="150"></v-img>
+          <v-img
+            src="@/assets/logo-black.svg"
+            max-height="80"
+            max-width="150"
+          ></v-img>
         </router-link>
       </div>
 
@@ -26,15 +30,13 @@
         <v-list>
           <v-list-item>
             <v-list-item-title>
-              <router-link
-                to="/profile"
-                class="text-decoration-none cursor-pointer"
+              <div
+                class="secondary--text font-weight-black cursor-pointer"
+                @click="goToProfile(currentUser)"
               >
-                <div class="secondary--text font-weight-black">
-                  {{ this.currentUser.username }}
-                </div>
-              </router-link></v-list-item-title
-            ></v-list-item
+                {{ this.currentUser.username }}
+              </div>
+            </v-list-item-title></v-list-item
           >
 
           <v-list-item>
@@ -83,6 +85,10 @@ export default {
     logout() {
       this.$store.dispatch(LOGOUT);
       this.$router.push("Login");
+    },
+    goToProfile(item) {
+      this.$router.push({ name: "Profile", params: { userID: item.uid.$oid } });
+      console.log(item);
     },
   },
 
