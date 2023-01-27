@@ -2,7 +2,7 @@
 import json
 from flask import Flask
 # This extension adds a toolbar overlay to Flask applications containing useful information for debugging. =>
-from src.routes.user_routes import users, singleton_user
+from src.routes.user_routes import users, singleton_user, user_posts
 from src.routes.auth.login_register_routes import login, register
 from src.routes.blog_posts_routes import add_post, posts, blog_post_categories, single_post, comment, delete_post, vote
 from flask_cors import CORS
@@ -71,5 +71,8 @@ app.add_url_rule("/comment/<comment_id>", view_func=comment,
 
 app.add_url_rule("/rate", view_func=vote,
                  methods=["POST"])
+
+app.add_url_rule("/users/<uid>/blog_posts", view_func=user_posts,
+                 methods=["GET"])
 
 app.run(host="0.0.0.0", port=8000)

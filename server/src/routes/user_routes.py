@@ -1,5 +1,7 @@
+from src.models.blog_posts_model import Blog_posts
+from src.models.models import StatusCodeEnums
 from src.models.user_model import User
-from flask import make_response
+from flask import make_response, request
 from src.services.JWT_service import token_required
 
 # ------------------------------------------------------------
@@ -35,6 +37,25 @@ def singleton_user(current_user, uid):
 
 
 # ------------------------------------------------------------
+
+
+# *get user posts by user id
+
+@token_required
+def user_posts(current_user, uid):
+    response = {}
+    if request.method == "GET":
+        try:
+            posts = Blog_posts.objects(author_id=uid)
+            response["data"] = posts
+            response["status"] = StatusCodeEnums.success["code"]
+            response["msg"] = StatusCodeEnums.success["msg"]
+            return make_response(response)
+        except:
+            response["data"] = "User not found"
+            response["status"] = StatusCodeEnums.not_found["code"]
+            response["msg"] = StatusCodeEnums.not_found["msg"]
+            return make_response(response)
 
 
 """

@@ -1,6 +1,35 @@
 // global values
 @import "./config";
 
+
+// -------------------------------------
+// *global properties
+// pointer cursor for v-data-table
+.cursor-pointer > .v-data-table__wrapper > table > tbody > tr:hover {
+  cursor: pointer;
+}
+// cursor pointer for eve
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.width-100{
+  width: 100% !important;
+}
+.width-75{
+  width: 75% !important;
+}
+.width-50{
+  width: 50% !important;
+}
+.width-25{
+  width: 25% !important;
+}
+
+
+.display-flex{
+  display: flex !important;
+}
 // -------------------------------------
 // home style begin
 .home {
