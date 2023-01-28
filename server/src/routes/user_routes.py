@@ -9,7 +9,7 @@ from src.services.JWT_service import token_required
 
 
 @token_required
-def list_users(current_user):
+def users(current_user):
     data = []
     for user in Users.objects():
         data.append(user)
@@ -38,6 +38,23 @@ def singleton_user(current_user, uid):
 # ------------------------------------------------------------
 
 
+# *get user posts by user id
+
+@token_required
+def user_posts(current_user, uid):
+    response = {}
+    if request.method == "GET":
+        try:
+            posts = Blog_posts.objects(author_id=uid)
+            response["data"] = posts
+            response["status"] = StatusCodeEnums.success["code"]
+            response["msg"] = StatusCodeEnums.success["msg"]
+            return make_response(response)
+        except:
+            response["data"] = "User not found"
+            response["status"] = StatusCodeEnums.not_found["code"]
+            response["msg"] = StatusCodeEnums.not_found["msg"]
+            return make_response(response)
 
 
 """
