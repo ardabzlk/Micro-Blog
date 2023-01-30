@@ -57,7 +57,7 @@ export default {
         },
       };
       this.axios.get("http://127.0.0.1:8000/users", data).then((response) => {
-        this.userList = response.data;
+        this.userList = response.data.data;
       });
     },
   },

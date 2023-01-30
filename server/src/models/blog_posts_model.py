@@ -1,15 +1,11 @@
 from src.models.models import db
-# ----------------------------------------------
-# User collection
 
 
-class Test_Model(db.Document):
-    title = db.StringField()
-    text = db.StringField()
+# db collection: BlogPosts
 
 
-class Blog_posts(db.Document):
-
+class BlogPosts(db.Document):
+    meta = {'collection': 'BlogPosts'}
     author_id = db.ObjectIdField(null=False, required=True, exists=True)
     author_username = db.StringField(null=False, required=True, exists=True)
     title = db.StringField(null=False, required=True, exists=True)
@@ -20,19 +16,24 @@ class Blog_posts(db.Document):
     dislike = db.IntField()
     img_base64 = db.StringField(null=False, required=True, exists=True)
 
+# db collection: BlogCategories
 
-class blog_categories(db.Document):
 
+class BlogCategories(db.Document):
+    meta = {'collection': 'BlogCategories'}
     category_id = db.IntField(null=False, required=True, exists=True)
     category_name = db.StringField(null=False, required=True, exists=True)
 
+# db collection: BlogPostComments
 
-class blog_post_comment(db.Document):
+
+class BlogPostComments(db.Document):
     """
     user_id: id field
     post_id: id field
     vote_value: 0(no vote),1
     """
+    meta = {'collection': 'BlogPostComments'}
     post_id = db.ObjectIdField()
     author_id = db.ObjectIdField()
     author_username = db.StringField()
@@ -40,13 +41,17 @@ class blog_post_comment(db.Document):
     comment_content = db.StringField()
     vote_value: db.IntField()
 
+# db collection: BlogPostVotes
 
-class blog_post_vote(db.Document):
+
+class BlogPostVotes(db.Document):
+
     """
     user_id: id field
     post_id: id field
     vote_value: 0(no vote),1
     """
+    meta = {'collection': 'BlogPostVotes'}
     post_id = db.ObjectIdField()
     author_id = db.ObjectIdField()
     vote_value = db.IntField()

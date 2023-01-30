@@ -7,28 +7,19 @@ from src.models.models import db
 # User collection
 
 
-class User(db.Document):
+class Users(db.Document):
     """
     User model for user collection
     user_id
     name
     surname
     """
-
+    meta = {'collection': 'Users'}
     name = db.StringField(null=False, required=True, exists=True)
     surname = db.StringField(null=False, required=True, exists=True)
     username = db.StringField(null=False, required=True, exists=True)
     email = db.StringField(null=False, required=True, exists=True)
     password = db.StringField(null=False, required=True, exists=True)
-
-    # to see the created user =>
-    def to_json(self):
-        bson_data = [{'user_id': self.id,
-                      'name': self.name, 'surname': self.surname, 'username': self.username, 'email': self.email, 'password': self.password}]
-
-        json_data_with_backslashes = json_util.dumps(bson_data)
-        json_data = json.loads(json_data_with_backslashes)
-        return json_data
 # ----------------------------------------------
 
 

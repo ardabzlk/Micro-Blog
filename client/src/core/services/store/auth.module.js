@@ -80,7 +80,7 @@ const actions = {
         },
       })
         .then((response) => {
-          context.commit(SET_AUTH, response.data);
+          context.commit(SET_AUTH, response.data.data);
           context.commit(SET_PASSWORD, credentials.password);
           context.commit(SET_EMAIL, credentials.email);
           resolve(response);
