@@ -16,6 +16,17 @@ db = MongoEngine()
 
 
 class StatusCodeEnums:
+    """
+    This class is a model for status code enums
+    main usage is with the following ResponseModel class
+
+    succes should be returned when the request is successful
+    not_found should be returned when the requested resource or data is not found
+    bad_request should be returned when the request is not valid
+    unauthorized should be returned when the user is not authorized to access the requested resource
+    gone should be returned when the requested resource is no longer available
+
+    """
     success = {"msg": "Success", "code": 200}
     not_found = {"msg": "Not found", "code": 404}
     bad_request = {"msg": "Bad Request", "code": 400}
@@ -32,7 +43,26 @@ class StatusCodeEnums:
 
 
 class ResponseModel:
+    """
+    This class is a global model for response model
+
+    Attributes:
+        data: data to be returned
+
+    Methods:
+        get_success_response: returns a success response with "success" message and 200 status code
+        get_not_found_response: returns a not found response with "not found" message and 404 status code
+        get_bad_request_response: returns a bad request response with "bad request" message and 400 status code
+        get_unauthorized_response: returns a unauthorized response with "unauthorized" message and 401 status code
+    """
+
     def __init__(self, data=None):
+        """
+        The constructor for ResponseModel class
+
+        Parameters:
+            data: data to be returned
+        """
         self.data = data
 
     # only this response will return data with success message and 200 status code

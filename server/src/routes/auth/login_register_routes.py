@@ -18,6 +18,34 @@ with open(config_path, 'r') as f:
     config = json.load(f)
 
 def register():
+    """
+    Register a new user and return it's token
+
+    Basic method for registration
+
+    endpoint: /register
+
+    method: POST
+    
+    body: {
+        "name": "string",
+        "surname": "string",
+        "username": "string",
+        "email": "string",
+        "password": "string"
+    }
+
+    response: {
+        "data": {
+            "token": "string"
+        },
+
+    args: None
+
+    return: Token
+
+    """
+
     # # to save the instance to the mongoDB collection = >
     token = None
     body_form_data = request.get_json()
@@ -52,6 +80,30 @@ def register():
 
 
 def login():
+    """
+    Login a user and return it's token
+    
+    Basic method for authentication and authorization
+
+    endpoint: /login
+
+    method: POST
+
+    body: {
+        "email": "string",
+        "password": "string"
+    }
+
+    response: {
+        "data": {
+            "token": "string"
+            "uid": "string"
+            "username": "string"
+        }
+
+
+    """
+
     body_form_data = request.get_json()
     authUserEmail = body_form_data.get('email')
     authPassword = body_form_data.get('password')
