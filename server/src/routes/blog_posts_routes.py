@@ -34,6 +34,24 @@ def ExampleCRUDMethod():
 
 @token_required
 def post_management(current_user, param_post_id):
+    """
+    Manage single post
+    endpoint: /blog-posts/<param_post_id>
+
+    This method allows to manage a single post
+    it can be used to get, update or delete a single post
+    it checks if the user is the author of the post before updating or deleting it-
+    by comparing the current user id with the author id
+    
+    *GET
+    *PUT
+    *DELETE
+    
+    args: param_post_id
+    
+    return: response model according to result
+
+    """
 
     try:
         # add new blog post
@@ -55,22 +73,24 @@ def post_management(current_user, param_post_id):
         elif request.method == "PUT":
             blog_post = BlogPosts.objects(id=param_post_id).first()
             response = ResponseModel()
-            # TODO: check if the user is the owner of the post
-            json_form_data = request.get_json()
-            _title = json_form_data.get("title")
-            _content = json_form_data.get("content")
-            _category_id = json_form_data.get("category_id")
-            _img_base64 = json_form_data.get("img_base64")
-            _date = datetime.datetime.today()
-            if len(_title) == 0 or len(_content) == 0 or _category_id == None:
-                return response.get_bad_request_response()
+            if current_user.id != blog_post.author_id:
+                return response.get_unauthorized_response()
             else:
-                blog_post.update(title=_title, content=_content,
-                                 category_id=_category_id, date=_date, img_base64=_img_base64)
-                data = []
-                data.append(blog_post)
-                response.data = data
-                return response.get_success_response()
+                json_form_data = request.get_json()
+                _title = json_form_data.get("title")
+                _content = json_form_data.get("content")
+                _category_id = json_form_data.get("category_id")
+                _img_base64 = json_form_data.get("img_base64")
+                _date = datetime.datetime.today()
+                if len(_title) == 0 or len(_content) == 0 or _category_id == None:
+                    return response.get_bad_request_response()
+                else:
+                    blog_post.update(title=_title, content=_content,
+                                     category_id=_category_id, date=_date, img_base64=_img_base64)
+                    data = []
+                    data.append(blog_post)
+                    response.data = data
+                    return response.get_success_response()
 
         # delete post
         # *DELETE
@@ -78,12 +98,14 @@ def post_management(current_user, param_post_id):
             blog_post = BlogPosts.objects(id=param_post_id).first()
             response = ResponseModel()
 
-            # TODO: check if the user is the owner of the post
-            blog_post.delete()
-            data = ["deleted successfully"]
-            data.append(blog_post)
-            response.data = data
-            return response.get_success_response()
+            if current_user.id != blog_post.author_id:
+                return response.get_unauthorized_response()
+            else:
+                blog_post.delete()
+                data = ["deleted successfully"]
+                data.append(blog_post)
+                response.data = data
+                return response.get_success_response()
 
     except:
         response = ResponseModel()
@@ -94,6 +116,21 @@ def post_management(current_user, param_post_id):
 
 @token_required
 def posts(current_user):
+    """
+    Manage all posts
+    endpoint: /blog-posts
+    
+    This method allows to manage all posts
+    it can be used to get all posts or add a new post
+
+    *POST
+    *GET
+
+    args: none
+
+    return: response model according to result
+
+    """
     # *POST
     # add new blog post
     if request.method == "POST":
@@ -138,6 +175,25 @@ def posts(current_user):
 
 @token_required
 def vote(current_user):
+    """
+    Vote for a post
+    endpoint: /vote
+
+    This method allows to vote for a post
+    it can be used to like or dislike a post
+    it checks if the user has already voted for the post before
+    if the user has already voted for the post, it updates the vote
+    if the user has not voted for the post, it adds a new vote
+
+    *POST
+
+    args: none
+
+    return: response model according to result
+
+    """
+
+
     response = ResponseModel()
     json_body_form_data = request.get_json()
     _post_id = json_body_form_data["post_id"]
@@ -198,7 +254,8 @@ def vote(current_user):
 
 def add_category():
     """
-    temporary function to add blog categories
+    # ! Deprecated
+    Temporary function to add blog categories
     it doesnt have endpoint 
     category_id = StringField(required=True)
     category_name = StringField(required=True)
@@ -227,6 +284,11 @@ def add_category():
 
 @token_required
 def blog_post_categories(current_user):
+    """
+    # ! Deprecated
+    get all blog categories
+    endpoint: -
+    """
     data = []
     for category in BlogCategories.objects():
         data.append(category)
@@ -241,12 +303,31 @@ def blog_post_categories(current_user):
 
 
 @token_required
-def comment(current_user, comment_id):
+def comment(current_user, post_id):
+    """
+    Comment on a post
+    endpoint: /comment/<post_id>
+
+    This method allows to comment on a post
+    it can be used to get all comments for a post or add a comment to a post
+    the method checks the request method
+    if the request method is GET, it returns all comments for a post
+    if the request method is POST, it adds a comment to a post
+    also it checks before deleting a comment if the user is the author of the comment
+
+    *GET
+    *POST
+
+    args: post_id
+
+    return: response model according to result  
+
+    """
     try:
         data = []
         if request.method == "GET":
             # return all comments for a post
-            comment = BlogPostComments.objects(post_id=comment_id)
+            comment = BlogPostComments.objects(post_id=post_id)
             data.append(comment)
             response = ResponseModel(data)
             return response.get_success_response()
@@ -276,11 +357,12 @@ def comment(current_user, comment_id):
             json_body_form_data = request.get_json()
             _comment_id = json_body_form_data["id"]
             post_comment = BlogPostComments.objects(id=_comment_id).first()
-            # TODO: check if the user is the author of the comment
-
-            post_comment.delete()
-            response.data = "comment deleted"
-            return response.get_success_response()
+            if current_user.id != post_comment.author_id:
+                return response.get_unauthorized_response()
+            else:
+                post_comment.delete()
+                response.data = "comment deleted"
+                return response.get_success_response()
         else:
             response = ResponseModel()
             return response.get_bad_request_response()

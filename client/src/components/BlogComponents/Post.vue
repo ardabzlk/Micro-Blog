@@ -63,6 +63,7 @@
           </v-col>
           <v-col sm="12" md="12" class="text-right">
             <v-btn
+            v-if="isUser"
               color="error"
               icon
               @click="deletePostComments(item._id.$oid)"
@@ -107,6 +108,7 @@ export default {
       categories: [],
       post_id: this.$route.params.postID,
       newCommentContent: "",
+      isUser: false,
     };
   },
   mounted() {
@@ -121,12 +123,17 @@ export default {
     getPost() {
       this.axios.get("blog-posts/" + this.post_id).then((response) => {
         this.postDetail = response.data.data[0];
+        if (this.currentUser.uid.$oid === this.postDetail.author_id.$oid) {
+          this.isUser = true;
+        } else {
+          this.isUser = false;
+        }
         this.display();
       });
     },
     getPostComments() {
       this.axios.get("comment/" + this.post_id).then((response) => {
-        this.comments = response.data[0];
+        this.comments = response.data.data[0];
       });
     },
     deletePostComments(_id) {
