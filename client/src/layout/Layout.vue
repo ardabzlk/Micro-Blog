@@ -88,7 +88,6 @@ export default {
     },
     goToProfile(item) {
       this.$router.push({ name: "Profile", params: { userID: item.uid.$oid } });
-      console.log(item);
     },
   },
 

@@ -134,7 +134,7 @@ export default {
     },
     async posts() {
       this.axios
-        .get("users/" + this.$route.params.userID + "/blog_posts")
+        .get("users/" + this.$route.params.userID + "/blog-posts")
         .then((response) => {
           this.postList = response.data.data;
           this.isLoading = false;

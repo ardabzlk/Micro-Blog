@@ -48,7 +48,6 @@ export default {
   methods: {
     goToProfile(item) {
       this.$router.push({ name: "Profile", params: { userID: item._id.$oid } });
-      console.log(item);
     },
     getUserList() {
       let data = {
