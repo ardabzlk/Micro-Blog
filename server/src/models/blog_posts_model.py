@@ -5,23 +5,30 @@ from src.models.models import db
 
 
 class BlogPosts(db.Document):
-    """
-    This class is a model for BlogPosts collection in MongoDB
-    
-    Attributes:
-        author_id: ObjectIdField - id of the author of the post
-        author_username: StringField - username of the author of the post
-        title: StringField - title of the post
-        content: StringField - content of the post
-        date: DateField - date of the post
-        category_id: IntField - id of the category of the post
-        like: IntField - number of likes of the post
-        dislike: IntField - number of dislikes of the post
-        img_base64: StringField - base64 string of the image of the post   
-
+    """This class is a model for BlogPosts collection in MongoDB
     Note in order to override the default collection name, it has been set to BlogPosts
 
-    
+    Parameters
+    ----------
+        author_id: ObjectIdField
+            id of the author of the post
+        author_username: StringField
+            username of the author of the post
+        title: StringField
+            title of the post
+        content: StringField
+            content of the post
+        date: DateField
+            date of the post
+        category_id: IntField
+            id of the category of the post
+        like: IntField
+            number of likes of the post
+        dislike: IntField
+            number of dislikes of the post
+        img_base64: StringField
+            base64 string of the image of the post   
+
     """
     meta = {'collection': 'BlogPosts'}
     author_id = db.ObjectIdField(null=False, required=True, exists=True)
@@ -38,14 +45,16 @@ class BlogPosts(db.Document):
 
 
 class BlogCategories(db.Document):
-    """
-    This class is a model for BlogCategories collection in MongoDB
-
-    Attributes:
-        category_id: IntField - id of the category
-        category_name: StringField - name of the category
-
+    """This class is a model for BlogCategories collection in MongoDB
     Note in order to override the default collection name, it has been set to BlogCategories
+
+    Parameters
+    ----------
+        category_id: IntField
+            id of the category
+        category_name: StringField
+            name of the category
+
     """
     meta = {'collection': 'BlogCategories'}
     category_id = db.IntField(null=False, required=True, exists=True)
@@ -55,18 +64,23 @@ class BlogCategories(db.Document):
 
 
 class BlogPostComments(db.Document):
-    """
-    This class is a model for BlogPostComments collection in MongoDB
+    """This class is a model for BlogPostComments collection in MongoDB
+    Note in order to override the default collection name, it has been set to BlogPostComments
 
     Attributes:
-        post_id: ObjectIdField - id of the post
-        author_id: ObjectIdField - id of the author of the comment
-        author_username: StringField - username of the author of the comment
-        date: DateField - date of the comment
-        comment_content: StringField - content of the comment
-        vote_value: IntField - value of the vote of the comment [1(like) or 2(dislike)]
+        post_id: ObjectIdField
+            id of the post
+        author_id: ObjectIdField
+            id of the author of the comment
+        author_username: StringField
+            username of the author of the comment
+        date: DateField
+            date of the comment
+        comment_content: StringField
+            content of the comment
+        vote_value: IntField
+            value of the vote of the comment [1(like) or 2(dislike)]
 
-    Note in order to override the default collection name, it has been set to BlogPostComments
     """
     meta = {'collection': 'BlogPostComments'}
     post_id = db.ObjectIdField()
@@ -81,15 +95,18 @@ class BlogPostComments(db.Document):
 
 class BlogPostVotes(db.Document):
 
-    """
-    This class is a model for BlogPostVotes collection in MongoDB
-
-    Attributes:
-        post_id: ObjectIdField - id of the post
-        author_id: ObjectIdField - id of the author of the vote
-        vote_value: IntField - value of the vote [1(like) or 2(dislike)]
-
+    """This class is a model for BlogPostVotes collection in MongoDB
     Note in order to override the default collection name, it has been set to BlogPostVotes        
+
+    Parameters
+    ----------
+        post_id: 
+            id of the post
+        author_id: 
+            id of the author of the vote
+        vote_value: 
+            value of the vote [1(like) or 2(dislike)]
+
     """
     meta = {'collection': 'BlogPostVotes'}
     post_id = db.ObjectIdField()

@@ -16,7 +16,7 @@ db = MongoEngine()
 
 
 class StatusCodeEnums:
-    """
+    """Global status code enums
     This class is a model for status code enums
     main usage is with the following ResponseModel class
 
@@ -35,34 +35,31 @@ class StatusCodeEnums:
 
 
 # ----------------------------------------------------
-"""
-    global response model
-    @param data: data to be returned
-    @return: a response with a specific status code (SatusCodeEnums) and a message
-"""
 
 
 class ResponseModel:
-    """
-    This class is a global model for response model
+    """This class is a global model for response model
 
-    Attributes:
-        data: data to be returned
+    Parameters
+    ----------
+        data: MongoEngine object
+            data to be returned
 
-    Methods:
-        get_success_response: returns a success response with "success" message and 200 status code
-        get_not_found_response: returns a not found response with "not found" message and 404 status code
-        get_bad_request_response: returns a bad request response with "bad request" message and 400 status code
-        get_unauthorized_response: returns a unauthorized response with "unauthorized" message and 401 status code
+    Returns
+    -------
+        get_success_response
+            returns a success response with "success" message and 200 status code
+        get_not_found_response
+            returns a not found response with "not found" message and 404 status code
+        get_bad_request_response
+            returns a bad request response with "bad request" message and 400 status code
+        get_unauthorized_response
+            returns a unauthorized response with "unauthorized" message and 401 status code
     """
 
     def __init__(self, data=None):
-        """
-        The constructor for ResponseModel class
-
-        Parameters:
-            data: data to be returned
-        """
+        # *The constructor for ResponseModel class
+        
         self.data = data
 
     # only this response will return data with success message and 200 status code
