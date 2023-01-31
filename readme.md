@@ -4,8 +4,6 @@ Micro-Blog provides an environment to users which allows read, write and share t
 
 <br>
 
-## Instructions: Starting to work on the project
-
 ### Repository
 
 git: git clone <https://github.com/ardabzlk/Micro-Blog-Playground.git>
