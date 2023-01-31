@@ -4,15 +4,26 @@ from src.models.models import db
 
 
 # ----------------------------------------------
-# User collection
 
 
 class Users(db.Document):
-    """
-    User model for user collection
-    user_id
-    name
-    surname
+    """User model
+    This class is a model for Users collection in MongoDB
+    Note in order to override the default collection name, it has been set to Users
+
+    Parameters
+    ----------
+        name: StringField
+            name of the user
+        surname: StringField
+            surname of the user
+        username: StringField
+            username of the user
+        email: StringField
+            email of the user
+        password: StringField
+            password of the user
+    
     """
     meta = {'collection': 'Users'}
     name = db.StringField(null=False, required=True, exists=True)

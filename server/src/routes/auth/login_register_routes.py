@@ -17,7 +17,40 @@ config_path = os.environ.get("CONFIG_PATH", "config.json")
 with open(config_path, 'r') as f:
     config = json.load(f)
 
+
 def register():
+    """Basic method for registration
+    Register a new user and return it's token
+    endpoint: /register
+
+    Parameters
+    ----------
+    method: POST
+    name: string
+        name of the user
+    surname: string
+        surname of the user
+    username: string
+        username of the user
+    email: string
+        email of the user (should be unique)
+    password: string
+        password of the user (hashed)
+
+
+    Returns
+    -------
+    json
+        token of the user
+
+
+    Exceptions
+    ----------
+        ResponseModel.get_bad_request_response()
+
+
+    """
+
     # # to save the instance to the mongoDB collection = >
     token = None
     body_form_data = request.get_json()
@@ -34,7 +67,7 @@ def register():
             hash_hassword = generate_password_hash(
                 body_form_data.get('password'), method='sha256')
             user = Users(name=body_form_data.get('name'),
-                        surname=body_form_data.get('surname'), username=body_form_data.get('username'), password=hash_hassword, email=body_form_data.get('email'))
+                         surname=body_form_data.get('surname'), username=body_form_data.get('username'), password=hash_hassword, email=body_form_data.get('email'))
             user.save()
             token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
             ) + datetime.timedelta(minutes=30)}, config["SECRET_KEY"])
@@ -48,38 +81,64 @@ def register():
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
-# user login
 
 
 def login():
+    """Basic method for authentication and authorization
+    Login a user and return it's token
+    endpoint: /login
+
+    Parameters
+    ----------
+    email: string
+        email of the user
+    password: string
+        password of the user (hashed)
+
+    Returns
+    -------
+    json
+        token of the user
+        uid of the user
+        username of the user
+
+    Exceptions
+    ----------
+        ResponseModel.get_bad_request_response()
+
+    """
+
     body_form_data = request.get_json()
     authUserEmail = body_form_data.get('email')
     authPassword = body_form_data.get('password')
     response = ResponseModel()
-    if (len(authUserEmail) == 0 or len(authPassword) == 0):
-        return response.get_bad_request_response()
-    elif not authUserEmail or not authPassword:
-        return response.get_unauthorized_response()
-    else:
-        user = Users.objects(email=authUserEmail).first()
-
-        if not user:
-            return response.get_not_found_response()
+    try:
+        if (len(authUserEmail) == 0 or len(authPassword) == 0):
+            return response.get_bad_request_response()
+        elif not authUserEmail or not authPassword:
+            return response.get_unauthorized_response()
         else:
-            if check_password_hash(user.password, authPassword):
+            user = Users.objects(email=authUserEmail).first()
 
-                data = {"uid": user.id}
-                data["username"] = user.username
-                token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
-                ) + datetime.timedelta(hours=6)}, config["SECRET_KEY"])
-                data["token"] = token
-
-                json_data_with_backslashes = json_util.dumps(data)
-                json_data = json.loads(json_data_with_backslashes)
-                response.data = json_data
-                return response.get_success_response()
+            if not user:
+                return response.get_not_found_response()
             else:
-                return response.get_unauthorized_response()
+                if check_password_hash(user.password, authPassword):
 
+                    data = {"uid": user.id}
+                    data["username"] = user.username
+                    token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
+                    ) + datetime.timedelta(hours=6)}, config["SECRET_KEY"])
+                    data["token"] = token
+
+                    json_data_with_backslashes = json_util.dumps(data)
+                    json_data = json.loads(json_data_with_backslashes)
+                    response.data = json_data
+                    return response.get_success_response()
+                else:
+                    return response.get_unauthorized_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 
 # -----------------------------------------------------------
