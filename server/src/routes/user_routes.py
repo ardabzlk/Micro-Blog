@@ -1,4 +1,6 @@
+from flask import request
 from src.models.user_model import Users
+from src.models.blog_posts_model import BlogPosts
 
 from src.models.models import ResponseModel
 
@@ -10,11 +12,33 @@ from src.services.JWT_service import token_required
 
 @token_required
 def users(current_user):
+    """User list
+    get all user list    
+    end point: /users
+    
+    Parameters
+    ----------
+    none
+
+    Returns
+    -------
+    json
+        user list
+        
+    Exceptions
+    ----------
+    Bad request response if the request is not valid
+    ResponseModel.get_bad_request_response()
+    """
     data = []
-    for user in Users.objects():
-        data.append(user)
-    response = ResponseModel(data)
-    return response.get_success_response()
+    try:
+        for user in Users.objects():
+            data.append(user)
+        response = ResponseModel(data)
+        return response.get_success_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
@@ -23,7 +47,25 @@ def users(current_user):
 
 @token_required
 def singleton_user(current_user, uid):
+    """User Details
+    get user by user id
+    end point: /users/<uid>
+    
+    Parameters
+    ----------
+    uid: user id
+    
+    Returns
+    -------
+    json
+        user details
+    
+    Exceptions
+    ----------
+    Not found response if the user is not found
+    ResponseModel.get_not_found_response()
 
+   """
     try:
         user = Users.objects(id=uid).first()
         user = user.to_json()
@@ -42,19 +84,22 @@ def singleton_user(current_user, uid):
 
 @token_required
 def user_posts(current_user, uid):
+    """
+    get user posts by user id
+    args:
+        uid: user id
+    return:
+        user posts
+    """
     response = {}
     if request.method == "GET":
         try:
-            posts = Blog_posts.objects(author_id=uid)
-            response["data"] = posts
-            response["status"] = StatusCodeEnums.success["code"]
-            response["msg"] = StatusCodeEnums.success["msg"]
-            return make_response(response)
+            posts = BlogPosts.objects(author_id=uid)
+            response = ResponseModel(posts)
+            return response.get_success_response()
         except:
-            response["data"] = "User not found"
-            response["status"] = StatusCodeEnums.not_found["code"]
-            response["msg"] = StatusCodeEnums.not_found["msg"]
-            return make_response(response)
+            response = ResponseModel()
+            return response.get_not_found_response()
 
 
 """

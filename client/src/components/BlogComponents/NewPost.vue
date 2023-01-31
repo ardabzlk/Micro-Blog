@@ -125,9 +125,7 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     },
-    konsolla() {
-      console.log(this.currentUser.uid.$oid);
-    },
+
     setFile(e) {
       try {
         const file = e;
