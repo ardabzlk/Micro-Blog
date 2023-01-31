@@ -12,18 +12,33 @@ from src.services.JWT_service import token_required
 
 @token_required
 def users(current_user):
-    """
+    """User list
     get all user list    
-    args:
-        None
-    return:
-        user list    
+    end point: /users
+    
+    Parameters
+    ----------
+    none
+
+    Returns
+    -------
+    json
+        user list
+        
+    Exceptions
+    ----------
+    Bad request response if the request is not valid
+    ResponseModel.get_bad_request_response()
     """
     data = []
-    for user in Users.objects():
-        data.append(user)
-    response = ResponseModel(data)
-    return response.get_success_response()
+    try:
+        for user in Users.objects():
+            data.append(user)
+        response = ResponseModel(data)
+        return response.get_success_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 # ------------------------------------------------------------
 
 # ------------------------------------------------------------
@@ -32,14 +47,25 @@ def users(current_user):
 
 @token_required
 def singleton_user(current_user, uid):
-    """
+    """User Details
     get user by user id
+    end point: /users/<uid>
     
-    args:
-        uid: user id
+    Parameters
+    ----------
+    uid: user id
     
-    return:
-        user"""
+    Returns
+    -------
+    json
+        user details
+    
+    Exceptions
+    ----------
+    Not found response if the user is not found
+    ResponseModel.get_not_found_response()
+
+   """
     try:
         user = Users.objects(id=uid).first()
         user = user.to_json()
