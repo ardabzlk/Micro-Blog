@@ -2,6 +2,51 @@
 
 Micro-Blog provides an environment to users which allows read, write and share their opinion.
 
+### Table of Contents
+- [Micro-Blog](#Micro-Blog) 
+  - [Repository](#Repository) 
+- [Server](#Server) 
+  - [Run](#Run)
+  - [Folder Structure](#Folder-Structure) 
+  - [API References](#API-References)
+    - [Authentication](#Authentication)
+      - [Register user](#Register-user)
+      - [Login user](#Login-user)
+    - [User Listing](#User-Listing)
+      - [Get all users](#Get-all-users)
+      - [Get user by id](#Get-user-by-id)
+      - [Get user posts by user id](#Get-user-posts-by-user-id)
+    - [Blog Post Endpoints](#Blog-Post-Endpoints)
+      - [Get all posts](#Get-all-posts)
+      - [Post new blog-post](#Post-new-blog-post)
+      - [Get blog-post by id](#Get-post-by-id)
+      - [Update blog-post by id](#Update-post-by-id)
+      - [Delete blog-post by id](#Delete-post-by-id)
+      - [Get all categories](#Get-all-categories)
+    - [Comment Endpoints](#Comment-Endpoints)
+      - [Get all comments](#Get-all-comments)
+      - [Post new comment](#Post-new-comment)
+      - [Get comment by id](#Get-comment-by-id)
+      - [Update comment by id](#Update-comment-by-id)
+      - [Delete comment by id](#Delete-comment-by-id)
+    - [Vote endpoints](#Vote-Endpoints)
+      - [Post vote](#Post-new-vote)
+- [Client](#Client)
+  - [Recommended System Environment](#Recommended-System-Environment)
+  - [Project Setup](#Project-Setup)
+  - [Folder Structure](#Folder-Structure)
+  - [Project Plan](#Project-Plan)
+    - [Pages](#Pages)
+- [Appendix](#Appendix)
+  - [Status Codes](#Status-Codes)
+- [Guide for pull requests](#Guide-for-pull-requests)
+  - [Creating Pull Requests](#Creating-Pull-Requests)
+  - [Reviewing Pull Requests](#Reviewing-and-Merging-the-Pull-Requests)
+
+  
+
+
+
 <br>
 
 ### Repository
@@ -279,13 +324,13 @@ it adds or updates the vote.
 # Client
 
 Client-side contains Vue application which runs through node local server. Before starting to work on the client, dependencies should be installed. To do that first open the terminal and navigate to "/client" folder and run a command "yarn install" to install client dependencies.
-### Recommend System Environment
+### Recommended System Environment
 
 - npm 8.4 or higher (npm -v)
 - node 16.14.2 or higher (node -v)
 
 
-##### Project setup
+### Project setup
 
 ```
 yarn install
@@ -348,7 +393,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - Profile page
   - To see the details about a user
 
-## Appendix
+# Appendix
 
 ### Status Codes
 
@@ -362,7 +407,7 @@ class StatusCodeEnums:
 
 ```
 
-# A guide for pull requests
+# Guide for pull requests
 ## Creating Pull Requests
 
 Creating the pull requests is an important part of git-flow. A good PR should be easy-to-review, be helpful to the new developers' onboarding and has a positive effect on product development.
@@ -397,7 +442,7 @@ Here are some key points that developers should follow before creating their pul
       -`git push -u origin 'feature-branch'`
    3. **Create a PR from GitHub**
 
-## Reviewing and Merging  The Pull Requests
+## Reviewing and Merging The Pull Requests
 
 Merge a pull request into the upstream branch when work is completed. Anyone with push access to the repository can complete the merge. [more info](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request)
 
