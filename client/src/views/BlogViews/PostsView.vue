@@ -6,7 +6,7 @@
 import PostGrid from "../../components/BlogComponents/PostsGrid.vue";
 
 export default {
-  name: "Home",
+  name: "post-view",
 
   components: {
     PostGrid,

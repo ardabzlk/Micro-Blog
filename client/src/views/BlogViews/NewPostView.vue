@@ -6,7 +6,7 @@
 import NewPost from "../../components/BlogComponents/NewPost.vue";
 
 export default {
-  name: "Home",
+  name: "new-post-view",
 
   components: {
     NewPost,
