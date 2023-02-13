@@ -28,6 +28,7 @@
 
 <script>
 export default {
+  name: "user-view",
   data: () => ({
      search: '',
     headers: [
