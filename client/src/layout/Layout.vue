@@ -62,6 +62,7 @@ import { LOGOUT } from "@/core/services/store/auth.module";
 import { mapGetters, mapState } from "vuex";
 import FooterC from "./Footer.vue";
 export default {
+  name: "layout-component",
   data() {
     return {
       menuItems: [{ title: "Profile", route: "/user" }],
