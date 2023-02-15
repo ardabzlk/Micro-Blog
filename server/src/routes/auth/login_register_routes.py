@@ -71,9 +71,12 @@ def register():
             user.save()
             token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
             ) + datetime.timedelta(minutes=30)}, config["SECRET_KEY"])
-            data = []
-            data["token"] = token
-            response.data = data
+
+            data = {"token": token}
+
+            json_data_with_backslashes = json_util.dumps(data)
+            json_data = json.loads(json_data_with_backslashes)
+            response.data = json_data
             return response.get_success_response()
     except:
         response = ResponseModel()

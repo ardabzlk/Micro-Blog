@@ -109,7 +109,7 @@ export default {
         .then(async (response) => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
           this.loading = false;
-          if (response.data.message !== "user created") {
+          if (response.data.msg !== "Success") {
             this.$store.dispatch(LOGOUT);
           } else {
             this.$router.push("/home");
