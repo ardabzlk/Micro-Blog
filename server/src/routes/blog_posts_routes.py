@@ -1,4 +1,4 @@
-from flask import request, make_response
+from flask import request
 from src.models.blog_posts_model import BlogPosts, BlogCategories, BlogPostComments, BlogPostVotes
 import datetime
 from src.services.JWT_service import token_required
