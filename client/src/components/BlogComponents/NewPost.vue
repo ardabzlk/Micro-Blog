@@ -89,7 +89,7 @@ export default {
       };
       axios({
         method: "post",
-        baseURL: "http://127.0.0.1:8000/blog_posts/add",
+        baseURL: "http://127.0.0.1:8000/blog-posts",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",
@@ -110,9 +110,10 @@ export default {
         },
       };
       this.axios
-        .get("http://127.0.0.1:8000/blog_posts/categories", data)
+        .get("http://127.0.0.1:8000/blog-posts/categories", data)
         .then((response) => {
-          this.categoryItems = response.data;
+          this.categoryItems = response.data.data;
+
         });
     },
 
