@@ -60,6 +60,14 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: "/new-category",
+        name: "New-Category",
+        component: () => import("@/views/BlogViews/NewCategoryView.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
   {

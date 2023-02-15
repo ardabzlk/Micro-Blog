@@ -68,7 +68,16 @@ export default {
   data: () => ({
     valid: true,
     required: [(v) => !!v || "This field is required"],
-    categoryItems: [],
+    categoryItems: [
+
+      {
+        _id: {
+          $oid: "63879e3f28bbf782e3a991a8",
+        },
+        category_id: 2,
+        category_name: "IRL",
+      },
+    ],
     postDetail: { title: "", content: "", category: null },
     id_token: "Bearer " + localStorage.getItem("id_token"),
     image: {},
@@ -113,7 +122,6 @@ export default {
         .get("http://127.0.0.1:8000/blog-posts/categories", data)
         .then((response) => {
           this.categoryItems = response.data.data;
-
         });
     },
 
