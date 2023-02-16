@@ -276,38 +276,9 @@ def vote(current_user):
 
 # ------------------------------------------------------------
 
-# ------------------------------------------------------------
-# *add blog category
-
-
-def add_category():
-    """
-    # ! Deprecated
-    Temporary function to add blog categories
-    it doesnt have endpoint 
-    category_id = StringField(required=True)
-    category_name = StringField(required=True)
-    """
-    try:
-        body_form_data = request.get_json()
-
-        blog_post_category = BlogCategories(category_id=body_form_data.get(
-            "category_id"), category_name=body_form_data.get("category_name"))
-        blog_post_category.save()
-        data = []
-        data.append(blog_post_category)
-        response = ResponseModel(data)
-        return response.get_success_response()
-
-    except:
-        response = ResponseModel()
-        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
-
-
-# ------------------------------------------------------------
-# *get blog categories
+# * blog categories
 
 
 @token_required
@@ -317,12 +288,32 @@ def blog_post_categories(current_user):
     get all blog categories
     endpoint: -
     """
-    data = []
-    for category in BlogCategories.objects():
-        data.append(category)
-    response = ResponseModel(data)
-    return response.get_success_response()
-
+    try:
+        if request.method == "GET":
+            data = []
+            for category in BlogCategories.objects():
+                data.append(category)
+            response = ResponseModel(data)
+            return response.get_success_response()
+        elif request.method == "POST":
+            body_form_data = request.get_json()
+            latest_category = BlogCategories.objects().order_by('-category_id').first()
+            blog_post_category = BlogCategories(
+                category_id=latest_category.category_id+1, category_name=body_form_data.get("category_name"))
+            blog_post_category.save()
+            data = []
+            data.append(blog_post_category)
+            response = ResponseModel(data)
+            return response.get_success_response()
+        elif request.method == "DELETE":
+            body_form_data = request.get_json()
+            category_id = body_form_data.get("category_id")
+            BlogCategories.objects(category_id=category_id).delete()
+            response = ResponseModel()
+            return response.get_success_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
 
@@ -351,7 +342,7 @@ def comment(current_user, post_id):
         the username of the user who comments
     comment_content: str
         the comment
-    
+
 
     Returns
     -------
@@ -360,7 +351,7 @@ def comment(current_user, post_id):
             success response model if successfull
         get method:
             particular comment if successfull
-    
+
     Exceptions
     ----------
     Bad request response model if the request is not valid

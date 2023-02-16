@@ -41,7 +41,7 @@
           <v-list-item>
             <v-list-item-title>
               <div class="cursor-pointer">
-                <router-link class="primary--text text-decoration-none" to="new-category"> New Category </router-link>
+                <router-link class="primary--text text-decoration-none" to="/category-management"> Category Management </router-link>
               </div>
             </v-list-item-title>
           </v-list-item>
