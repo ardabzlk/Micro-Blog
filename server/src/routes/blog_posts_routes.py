@@ -283,10 +283,34 @@ def vote(current_user):
 
 @token_required
 def blog_post_categories(current_user):
-    """
-    # ! Deprecated
-    get all blog categories
-    endpoint: -
+    """ Blog post categories Management
+    this endpoint is used to get all blog post categories, add a new category or delete a category
+    if the request method is GET, it returns all blog post categories
+    if the request method is POST, it adds a new category
+    if the request method is DELETE, it deletes a category
+    it does not have authorization checks before deleteing a category
+    it increments the category id by 1 for each new category
+    
+    endpoint: /blog_post_categories
+
+    Parameters
+    ----------
+    category_name: str
+        the name of the category
+    category_id: int
+        the id of the category
+    
+    Returns
+    -------
+    json
+        success response model if successfull
+
+    Exceptions
+    ----------
+    Bad request response model if the request is not valid
+    ResponseModel.get_bad_request_response()
+
+    
     """
     try:
         if request.method == "GET":
