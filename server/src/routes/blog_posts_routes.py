@@ -276,53 +276,68 @@ def vote(current_user):
 
 # ------------------------------------------------------------
 
-# ------------------------------------------------------------
-# *add blog category
-
-
-def add_category():
-    """
-    # ! Deprecated
-    Temporary function to add blog categories
-    it doesnt have endpoint 
-    category_id = StringField(required=True)
-    category_name = StringField(required=True)
-    """
-    try:
-        body_form_data = request.get_json()
-
-        blog_post_category = BlogCategories(category_id=body_form_data.get(
-            "category_id"), category_name=body_form_data.get("category_name"))
-        blog_post_category.save()
-        data = []
-        data.append(blog_post_category)
-        response = ResponseModel(data)
-        return response.get_success_response()
-
-    except:
-        response = ResponseModel()
-        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
-
-
-# ------------------------------------------------------------
-# *get blog categories
+# * blog categories
 
 
 @token_required
 def blog_post_categories(current_user):
-    """
-    # ! Deprecated
-    get all blog categories
-    endpoint: -
-    """
-    data = []
-    for category in BlogCategories.objects():
-        data.append(category)
-    response = ResponseModel(data)
-    return response.get_success_response()
+    """ Blog post categories Management
+    this endpoint is used to get all blog post categories, add a new category or delete a category
+    if the request method is GET, it returns all blog post categories
+    if the request method is POST, it adds a new category
+    if the request method is DELETE, it deletes a category
+    it does not have authorization checks before deleteing a category
+    it increments the category id by 1 for each new category
+    
+    endpoint: /blog_post_categories
 
+    Parameters
+    ----------
+    category_name: str
+        the name of the category
+    category_id: int
+        the id of the category
+    
+    Returns
+    -------
+    json
+        success response model if successfull
+
+    Exceptions
+    ----------
+    Bad request response model if the request is not valid
+    ResponseModel.get_bad_request_response()
+
+    
+    """
+    try:
+        if request.method == "GET":
+            data = []
+            for category in BlogCategories.objects():
+                data.append(category)
+            response = ResponseModel(data)
+            return response.get_success_response()
+        elif request.method == "POST":
+            body_form_data = request.get_json()
+            latest_category = BlogCategories.objects().order_by('-category_id').first()
+            blog_post_category = BlogCategories(
+                category_id=latest_category.category_id+1, category_name=body_form_data.get("category_name"))
+            blog_post_category.save()
+            data = []
+            data.append(blog_post_category)
+            response = ResponseModel(data)
+            return response.get_success_response()
+        elif request.method == "DELETE":
+            body_form_data = request.get_json()
+            category_id = body_form_data.get("category_id")
+            BlogCategories.objects(category_id=category_id).delete()
+            response = ResponseModel()
+            return response.get_success_response()
+    except:
+        response = ResponseModel()
+        return response.get_bad_request_response()
 
 # ------------------------------------------------------------
 
@@ -351,7 +366,7 @@ def comment(current_user, post_id):
         the username of the user who comments
     comment_content: str
         the comment
-    
+
 
     Returns
     -------
@@ -360,7 +375,7 @@ def comment(current_user, post_id):
             success response model if successfull
         get method:
             particular comment if successfull
-    
+
     Exceptions
     ----------
     Bad request response model if the request is not valid

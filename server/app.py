@@ -56,7 +56,7 @@ app.add_url_rule("/blog-posts/<param_post_id>", view_func=post_management,
                  methods=["GET", "DELETE", "PUT"])
 
 app.add_url_rule("/blog-posts/categories", view_func=blog_post_categories,
-                 methods=["GET"])
+                 methods=["GET", "POST", "DELETE"])
 # blog comment
 app.add_url_rule("/comment/<post_id>", view_func=comment,
                  methods=["GET", "POST", "DELETE", "PUT"])

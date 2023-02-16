@@ -36,8 +36,15 @@
               >
                 {{ this.currentUser.username }}
               </div>
-            </v-list-item-title></v-list-item
-          >
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <div class="cursor-pointer">
+                <router-link class="primary--text text-decoration-none" to="/category-management"> Category Management </router-link>
+              </div>
+            </v-list-item-title>
+          </v-list-item>
 
           <v-list-item>
             <v-list-item-title
@@ -65,7 +72,10 @@ export default {
   name: "layout-component",
   data() {
     return {
-      menuItems: [{ title: "Profile", route: "/user" }],
+      menuItems: [
+        { title: "Profile", route: "/user" },
+        { title: "New Category", route: "/new-category" },
+      ],
     };
   },
   components: {
