@@ -71,8 +71,7 @@ def register():
             user.save()
             token = jwt.encode({'email': user.email, 'exp': datetime.datetime.utcnow(
             ) + datetime.timedelta(minutes=30)}, config["SECRET_KEY"])
-            data = []
-            data["token"] = token
+            data = {"token":token}
             response.data = data
             return response.get_success_response()
     except:
