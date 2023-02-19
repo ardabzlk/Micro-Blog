@@ -325,7 +325,7 @@ def blog_post_categories(current_user):
             if(latest_category != None):
                     latest_category_id = latest_category.category_id + 1
             elif(latest_category == None):
-                latest_category_id = 0
+                latest_category_id = 1
 
             blog_post_category = BlogCategories(
                 category_id=latest_category_id, category_name=body_form_data.get("category_name"))
