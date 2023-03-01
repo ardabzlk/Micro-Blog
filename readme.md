@@ -3,11 +3,12 @@
 Micro-Blog provides an environment to users which allows read, write and share their opinion.
 
 ### Table of Contents
-- [Micro-Blog](#Micro-Blog) 
-  - [Repository](#Repository) 
-- [Server](#Server) 
+
+- [Micro-Blog](#Micro-Blog)
+  - [Repository](#Repository)
+- [Server](#Server)
   - [Run](#Run)
-  - [Folder Structure](#Folder-Structure) 
+  - [Folder Structure](#Folder-Structure)
   - [API References](#API-References)
     - [Authentication](#Authentication)
       - [Register user](#Register-user)
@@ -43,10 +44,6 @@ Micro-Blog provides an environment to users which allows read, write and share t
   - [Creating Pull Requests](#Creating-Pull-Requests)
   - [Reviewing Pull Requests](#Reviewing-and-Merging-the-Pull-Requests)
 
-  
-
-
-
 <br>
 
 ### Repository
@@ -66,15 +63,16 @@ Server side contains application files and test files. App.py is the main file o
 To work in server-side put `cd server` to terminal
 
 To access virtual environment
+
 - On windows write `env\Scripts\activate.bat` to terminal
 - On linux write `source env/bin/activate` to terminal
 - On mac write `source env/bin/activate` to terminal
 
 Install packages:
 
-````bash
+```bash
 pip install -r requirements.txt
-````
+```
 
 config.json must be created under the server directory
 
@@ -96,9 +94,11 @@ You can use code the snippet below as a template for config.json
   }
 }
 ```
+
 First, you need to create a database in MongoDB Atlas. Then, you need to create a user for the database. After that, you need to replace the example_user_name, example_password, example_db and example_host with your own information. You can find the information in the MongoDB Atlas dashboard.
 
 ### Run
+
 To run the application write `python app.py` to terminal
 
 <br>
@@ -157,6 +157,7 @@ register new user and return the token
 login user and return the token and user information
 
 ## User Listing
+
 #### Get all users
 
 ```http
@@ -188,7 +189,9 @@ it returns the user information as a dictionary.
 | `uid`     | `string` | **Required**. Id of the user |
 
 it returns the user posts as a list of dictionaries.
+
 ## Blog Post Endpoints
+
 #### Get all posts
 
 ```http
@@ -264,6 +267,7 @@ it deletes the post.
 it returns all categories in the database as a list of dictionaries.
 
 ## Comment Endpoints
+
 #### Get all comments
 
 ```http
@@ -282,13 +286,13 @@ it returns all comments belongs to a particular post
   POST /api/comment/<post_id>
 ```
 
-| Parameter  | Type     | Description                         |
-| :--------- | :------- | :---------------------------------- |
-| `user_id`  | `string` | **Required**. Author of the comment |
-| `username` | `string  | **Required**. Author username       |
-| `post_id`  | `string` | **Required**. Id of the post        |
-| `comment_content`  | `string` | **Required**. Content of the comment|
-| `date`     | `date`   | **Required**. Publish date of the comment |
+| Parameter         | Type     | Description                               |
+| :---------------- | :------- | :---------------------------------------- |
+| `user_id`         | `string` | **Required**. Author of the comment       |
+| `username`        | `string  | **Required**. Author username             |
+| `post_id`         | `string` | **Required**. Id of the post              |
+| `comment_content` | `string` | **Required**. Content of the comment      |
+| `date`            | `date`   | **Required**. Publish date of the comment |
 
 it adds the new comment.
 
@@ -298,8 +302,8 @@ it adds the new comment.
   DELETE /api/comment/<comment_id>
 ```
 
-| Parameter    | Type     | Description                   |
-| :----------- | :------- | :---------------------------- |
+| Parameter    | Type     | Description                      |
+| :----------- | :------- | :------------------------------- |
 | `comment_id` | `string` | **Required**. Id of the comment. |
 
 it deletes the comment.
@@ -312,25 +316,37 @@ it deletes the comment.
   POST /api/vote/<post_id>
 ```
 
-| Parameter  | Type     | Description                         |
-| :--------- | :------- | :---------------------------------- |
-| `user_id`  | `string` | **Required**. Author of the vote    |
-| `post_id`  | `string` | **Required**. Id of the post        |
-| `vote`     | `int`    | **Required**. Vote of the post      |
+| Parameter | Type     | Description                      |
+| :-------- | :------- | :------------------------------- |
+| `user_id` | `string` | **Required**. Author of the vote |
+| `post_id` | `string` | **Required**. Id of the post     |
+| `vote`    | `int`    | **Required**. Vote of the post   |
 
 it adds or updates the vote.
-
 
 # Client
 
 Client-side contains Vue application which runs through node local server. Before starting to work on the client, dependencies should be installed. To do that first open the terminal and navigate to "/client" folder and run a command "yarn install" to install client dependencies.
+
 ### Recommended System Environment
 
 - npm 8.4 or higher (npm -v)
 - node 16.14.2 or higher (node -v)
 
-
 ### Project setup
+
+Project needs a configuration file before run. It has to be created under `client/public` directory. The name of the file should be "config.js". It should contain the following code:
+
+```javascript
+{
+  "API_BASE_URL": "http://backend-api-url/",
+  "productionTip": false
+}
+```
+
+After that, you can install dependencies and run the project.
+
+##### Install dependencies
 
 ```
 yarn install
@@ -357,7 +373,6 @@ yarn lint
 ##### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
 
 ### Folder Structure
 
@@ -408,6 +423,7 @@ class StatusCodeEnums:
 ```
 
 # Guide for pull requests
+
 ## Creating Pull Requests
 
 Creating the pull requests is an important part of git-flow. A good PR should be easy-to-review, be helpful to the new developers' onboarding and has a positive effect on product development.
@@ -415,16 +431,20 @@ Creating the pull requests is an important part of git-flow. A good PR should be
 Here are some key points that developers should follow before creating their pull requests
 
 1. **Write descriptive and consistent names**
+
    - Variable names, file names, folder structure etc...
 
 2. **Create a clear PR title and description**
+
    - Titles and descriptions must meet conventional commit standards. Learn more about [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
    - Do not hesitate to enrich the description with more context
 
 3. **Manage PR disagreements through direct communication**
+
    - Please ask questions and disagreements.
 
 4. **Always sync the branch**
+
    - Developers must pull/push changes on every opening and closing of their IDE
 
 5. **Prefer Smaller Requests**
@@ -437,10 +457,9 @@ Here are some key points that developers should follow before creating their pul
 
 ### Example Pull Request
 
-   1. **Commit changes**
-   2. **Publish/push branch into master**
-      -`git push -u origin 'feature-branch'`
-   3. **Create a PR from GitHub**
+1.  **Commit changes**
+2.  **Publish/push branch into master** -`git push -u origin 'feature-branch'`
+3.  **Create a PR from GitHub**
 
 ## Reviewing and Merging The Pull Requests
 
@@ -453,7 +472,7 @@ The responsibilities of the reviewer
 2. **Providing rich and constructive feedback**
    - Review messages should be clear, rich and constructive and should be avoided from personal ego.
 3. **Resolving conflicts**
-   - It may be the most important part of the merge processes. Facing with a conflict is pretty common. In such cases reviewer should be careful to not to damage the *dev* branch. For detailed tutorial please [visit](https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts)
+   - It may be the most important part of the merge processes. Facing with a conflict is pretty common. In such cases reviewer should be careful to not to damage the _dev_ branch. For detailed tutorial please [visit](https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts)
 4. **Being clear about request changes and comments**
    - Request changes and comments should be separated locally and globally. For instance, a comment about a single line should not be in the main review message, it should be written on the line comment. The reviewer should be clear about the requested changes and the comments.
 5. **Decide whether the new packages(if any) are necessary or not**
@@ -463,6 +482,7 @@ The responsibilities of the reviewer
 1. **Switch to the feature branch**
    - `git checkout 'feature-branch'`
 2. **Pull the master branch and test locally to see the PR is correct and convenient with requested.**
+
    - `git pull origin master`
 
 3. **If everything is fine go to repo and merge the PR.**
