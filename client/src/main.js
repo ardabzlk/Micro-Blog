@@ -9,8 +9,11 @@ import { VERIFY_AUTH } from "@/core/services/store/auth.module";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import VueAxios from "vue-axios";
-Vue.use(VueAxios, axios);
 
+Vue.config.productionTip = process.env.PROD_TYPE_PRODUCTION;
+
+Vue.use(VueAxios, axios);
+ApiService.init(process.env.VUE_APP_API_BASE_URL);
 // GOOD
 router.beforeEach((to, from, next) => {
   // Ensure we checked auth before each page load.
@@ -37,37 +40,9 @@ router.beforeEach((to, from, next) => {
   }, 100);
 });
 
-(async () => {
-  await fetch("./config.json")
-    .then((res) => {
-      console.log(res);
-      if (res.status >= 200 && res.status < 300) {
-        return res;
-      } else {
-        let err = new Error(res.statusText);
-        err.response = res;
-        alert("Failed to load config. Will try again. Error:  " + err);
-        window.location.reload(true);
-      }
-    })
-    .then((res) => res.json())
-    .then((config) => {
-      ApiService.init(config.API_BASE_URL);
-      Vue.config.productionTip = config.productionTip;
-    })
-    .then(() => {
-      new Vue({
-        router,
-        store,
-        vuetify,
-        render: (h) => h(App),
-      }).$mount("#app");
-    })
-    .catch((err) => {
-      alert("Failed to load config. Will try again. Error:  " + err);
-      window.location.reload(true);
-    });
-})();
-
-
-
+new Vue({
+  router,
+  store,
+  vuetify,
+  render: (h) => h(App),
+}).$mount("#app");

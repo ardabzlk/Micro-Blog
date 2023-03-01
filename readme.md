@@ -335,13 +335,13 @@ Client-side contains Vue application which runs through node local server. Befor
 
 ### Project setup
 
-Project needs a configuration file before run. It has to be created under `client/public` directory. The name of the file should be "config.js". It should contain the following code:
+Project needs a environment files before run. They have to be created under `client/` directory. The name of the files should be ``".env.production"`` and ``".env.development"``. They should contain the following code:
 
-```javascript
-{
-  "API_BASE_URL": "http://backend-api-url/",
-  "productionTip": false
-}
+``` .env
+# Development
+NODE_ENV= development
+VUE_APP_API_BASE_URL="http://your-api-url"
+PROD_TYPE_PRODUCTION = false
 ```
 
 After that, you can install dependencies and run the project.
