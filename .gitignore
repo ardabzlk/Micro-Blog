@@ -6,3 +6,4 @@ __pycache__
 .venv/
 env/
 server/config.json
+client/public/config.json

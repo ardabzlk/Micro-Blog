@@ -9,12 +9,8 @@ import { VERIFY_AUTH } from "@/core/services/store/auth.module";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import VueAxios from "vue-axios";
-
-Vue.config.productionTip = false;
-
 Vue.use(VueAxios, axios);
 
-ApiService.init("http://127.0.0.1:8000/");
 // GOOD
 router.beforeEach((to, from, next) => {
   // Ensure we checked auth before each page load.
@@ -41,9 +37,37 @@ router.beforeEach((to, from, next) => {
   }, 100);
 });
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+(async () => {
+  await fetch("./config.json")
+    .then((res) => {
+      console.log(res);
+      if (res.status >= 200 && res.status < 300) {
+        return res;
+      } else {
+        let err = new Error(res.statusText);
+        err.response = res;
+        alert("Config yüklenemedi. Tekrar denenecek. Hata:  " + err);
+        window.location.reload(true);
+      }
+    })
+    .then((res) => res.json())
+    .then((config) => {
+      ApiService.init(config.API_BASE_URL);
+      Vue.config.productionTip = config.productionTip;
+    })
+    .then(() => {
+      new Vue({
+        router,
+        store,
+        vuetify,
+        render: (h) => h(App),
+      }).$mount("#app");
+    })
+    .catch((err) => {
+      alert("Config yüklenemedi. Tekrar denenecek. Hata:  " + err);
+      window.location.reload(true);
+    });
+})();
+
+
+

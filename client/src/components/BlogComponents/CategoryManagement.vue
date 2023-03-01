@@ -78,7 +78,7 @@ export default {
         };
         axios({
           method: "post",
-          baseURL: "http://127.0.0.1:8000/blog-posts/categories",
+          url: "blog-posts/categories",
           data: JSON.stringify(bodyFormData),
           headers: {
             "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export default {
     getCategories() {
       axios({
         method: "get",
-        baseURL: "http://127.0.0.1:8000/blog-posts/categories",
+        url: "blog-posts/categories",
       })
         .then((res) => {
           this.categories = res.data.data;
@@ -114,7 +114,7 @@ export default {
       try {
         axios({
           method: "DELETE",
-          baseURL: "http://127.0.0.1:8000/blog-posts/categories",
+          url: "blog-posts/categories",
           data: JSON.stringify(bodyFormData),
           headers: {
             "Content-Type": "application/json",

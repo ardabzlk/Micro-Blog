@@ -127,7 +127,7 @@ export default {
       };
       this.axios({
         method: "post",
-        baseURL: "http://127.0.0.1:8000/login",
+        url: "login",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",

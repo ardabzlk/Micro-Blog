@@ -56,7 +56,7 @@ export default {
           Authorization: "Bearer " + localStorage.getItem("id_token"),
         },
       };
-      this.axios.get("http://127.0.0.1:8000/users", data).then((response) => {
+      this.axios.get("users", data).then((response) => {
         this.userList = response.data.data;
       });
     },
