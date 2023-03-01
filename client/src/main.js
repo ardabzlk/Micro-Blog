@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
       } else {
         let err = new Error(res.statusText);
         err.response = res;
-        alert("Config yüklenemedi. Tekrar denenecek. Hata:  " + err);
+        alert("Failed to load config. Will try again. Error:  " + err);
         window.location.reload(true);
       }
     })
@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
       }).$mount("#app");
     })
     .catch((err) => {
-      alert("Config yüklenemedi. Tekrar denenecek. Hata:  " + err);
+      alert("Failed to load config. Will try again. Error:  " + err);
       window.location.reload(true);
     });
 })();
