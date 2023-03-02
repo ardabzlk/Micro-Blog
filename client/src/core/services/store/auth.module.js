@@ -72,7 +72,7 @@ const actions = {
       };
       axios({
         method: "post",
-        baseURL: "http://127.0.0.1:8000/login",
+        url: "login",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const actions = {
       };
       axios({
         method: "post",
-        baseURL: "http://127.0.0.1:8000/register",
+        url: "register",
         data: JSON.stringify(bodyFormData),
         headers: {
           "Content-Type": "application/json",

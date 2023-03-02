@@ -10,11 +10,10 @@ import vuetify from "./plugins/vuetify";
 import axios from "axios";
 import VueAxios from "vue-axios";
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = process.env.PROD_TYPE_PRODUCTION;
 
 Vue.use(VueAxios, axios);
-
-ApiService.init("http://127.0.0.1:8000/");
+ApiService.init(process.env.VUE_APP_API_BASE_URL);
 // GOOD
 router.beforeEach((to, from, next) => {
   // Ensure we checked auth before each page load.
