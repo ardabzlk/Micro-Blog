@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  vue:
+    image: ardabzlk/micro-blog-vue:v.0.2
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - app_network
+
+  flask:
+    image: ardabzlk/micro-blog-flask:v.0.5
+    ports:
+      - "8000:80"
+    restart: always
+    networks:
+      - app_network
+      - mongo-network
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    networks:
+      - mongo-network
+
+networks:
+  app_network:
+    driver: bridge
+  mongo-network:
+    driver: bridge
+    external: true

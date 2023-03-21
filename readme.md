@@ -4,45 +4,63 @@ Micro-Blog provides an environment to users which allows read, write and share t
 
 ### Table of Contents
 
-- [Micro-Blog](#Micro-Blog)
-  - [Repository](#Repository)
-- [Server](#Server)
-  - [Run](#Run)
-  - [Folder Structure](#Folder-Structure)
-  - [API References](#API-References)
-    - [Authentication](#Authentication)
-      - [Register user](#Register-user)
-      - [Login user](#Login-user)
-    - [User Listing](#User-Listing)
-      - [Get all users](#Get-all-users)
-      - [Get user by id](#Get-user-by-id)
-      - [Get user posts by user id](#Get-user-posts-by-user-id)
-    - [Blog Post Endpoints](#Blog-Post-Endpoints)
-      - [Get all posts](#Get-all-posts)
-      - [Post new blog-post](#Post-new-blog-post)
-      - [Get blog-post by id](#Get-post-by-id)
-      - [Update blog-post by id](#Update-post-by-id)
-      - [Delete blog-post by id](#Delete-post-by-id)
-      - [Get all categories](#Get-all-categories)
-    - [Comment Endpoints](#Comment-Endpoints)
-      - [Get all comments](#Get-all-comments)
-      - [Post new comment](#Post-new-comment)
-      - [Get comment by id](#Get-comment-by-id)
-      - [Update comment by id](#Update-comment-by-id)
-      - [Delete comment by id](#Delete-comment-by-id)
-    - [Vote endpoints](#Vote-Endpoints)
-      - [Post vote](#Post-new-vote)
-- [Client](#Client)
-  - [Recommended System Environment](#Recommended-System-Environment)
-  - [Project Setup](#Project-Setup)
-  - [Folder Structure](#Folder-Structure)
-  - [Project Plan](#Project-Plan)
-    - [Pages](#Pages)
-- [Appendix](#Appendix)
-  - [Status Codes](#Status-Codes)
-- [Guide for pull requests](#Guide-for-pull-requests)
-  - [Creating Pull Requests](#Creating-Pull-Requests)
-  - [Reviewing Pull Requests](#Reviewing-and-Merging-the-Pull-Requests)
+- [Micro-Blog](#micro-blog)
+  - [Table of Contents](#table-of-contents)
+  - [Repository](#repository)
+- [Server](#server)
+  - [Run](#run)
+  - [Folder Structure](#folder-structure)
+  - [API References](#api-references)
+  - [Authentication](#authentication)
+    - [Register user](#register-user)
+    - [Login user](#login-user)
+  - [User Listing](#user-listing)
+    - [Get all users](#get-all-users)
+    - [Get user by id](#get-user-by-id)
+    - [Get user posts by user id](#get-user-posts-by-user-id)
+  - [Blog Post Endpoints](#blog-post-endpoints)
+    - [Get all posts](#get-all-posts)
+    - [Post new blog-post](#post-new-blog-post)
+    - [Get post by id](#get-post-by-id)
+    - [Update post by id](#update-post-by-id)
+    - [Delete post by id](#delete-post-by-id)
+    - [Get all categories](#get-all-categories)
+  - [Comment Endpoints](#comment-endpoints)
+    - [Get all comments](#get-all-comments)
+    - [Post new comment](#post-new-comment)
+    - [Delete comment by id](#delete-comment-by-id)
+  - [Vote Endpoints](#vote-endpoints)
+    - [Post new vote](#post-new-vote)
+- [Client](#client)
+  - [Recommended System Environment](#recommended-system-environment)
+  - [Project setup](#project-setup)
+    - [Install dependencies](#install-dependencies)
+    - [Compiles and hot-reloads for development](#compiles-and-hot-reloads-for-development)
+    - [Compiles and minifies for production](#compiles-and-minifies-for-production)
+    - [Lints and fixes files](#lints-and-fixes-files)
+    - [Customize configuration](#customize-configuration)
+  - [Folder Structure](#folder-structure-1)
+  - [Project Plan](#project-plan)
+    - [Pages](#pages)
+- [Appendix](#appendix)
+  - [Status Codes](#status-codes)
+- [Guide for pull requests](#guide-for-pull-requests)
+  - [Creating Pull Requests](#creating-pull-requests)
+    - [Example Pull Request](#example-pull-request)
+  - [Reviewing and Merging The Pull Requests](#reviewing-and-merging-the-pull-requests)
+    - [Example merge process](#--example-merge-process--)
+- [Guide for Dockerization on Ubuntu 20.04](#guide-for-dockerization-on-ubuntu-2004)
+  - [Docker Installation](#docker-installation)
+    - [Install Docker Engine](#install-docker-engine)
+  - [Dockerization](#dockerization)
+    - [Vue App](#vue-app)
+    - [Flask App](#flask-app)
+    - [MongoDB](#mongodb)
+    - [Docker Compose](#docker-compose)
+    - [Blockers, issues and solutions](#blockers--issues-and-solutions)
+      - [Issue 1](#issue-1)
+      - [Issue 2](#issue-2)
+    - [Conclusion](#conclusion)
 
 <br>
 
@@ -335,9 +353,9 @@ Client-side contains Vue application which runs through node local server. Befor
 
 ### Project setup
 
-Project needs a environment files before run. They have to be created under `client/` directory. The name of the files should be ``".env.production"`` and ``".env.development"``. They should contain the following code:
+Project needs a environment files before run. They have to be created under `client/` directory. The name of the files should be `".env.production"` and `".env.development"`. They should contain the following code:
 
-``` .env
+```.env
 # Development
 NODE_ENV= development
 VUE_APP_API_BASE_URL="http://your-api-url"
@@ -494,3 +512,235 @@ The responsibilities of the reviewer
 7. **Merge feature branch into local master.**
    - `git merge 'feature-branch'`
 8. **Once conflicts are resolved and task is done go to GitHub repo and merge the PR**
+
+# Guide for Dockerization on Ubuntu 20.04
+
+## Docker Installation
+
+### Install Docker Engine
+
+1. Update the apt package index and install packages to allow apt to use a repository over HTTPS:
+
+   ```bash
+   sudo apt-get update
+
+   sudo apt-get install \
+       apt-transport-https \
+       ca-certificates \
+       curl \
+       gnupg \
+       lsb-release
+   ```
+
+2. Add Docker’s official GPG key:
+
+   ```bash
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+   ```
+
+3. Use the following command to set up the stable repository.
+
+   ```bash
+   echo \
+     "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+4. Update the apt package index, and install the latest version of Docker Engine and containerd, or go to the next step to install a specific version:
+
+   ```bash
+    sudo apt-get update
+    sudo apt-get install docker-ce docker-ce-cli containerd.io
+   ```
+
+5. Verify that Docker Engine is installed correctly by running the hello-world image.
+
+   ```bash
+   sudo docker run hello-world
+   ```
+
+   This command downloads a test image and runs it in a container. When the container runs, it prints an informational message and exits.
+
+I will build the images on local machine and use docker compose for server deployment. The logic is that I will build the images on my local machine and push them to the docker hub. Then I will pull the images from the docker hub and deploy them on the server. I will mention the steps for docker compose at the end of the section.
+
+## Dockerization
+
+### Vue App
+
+I started to containerize the project with the Vue app. First of all, I created a Dockerfile in the root directory of the project on my local machine. I used my PC to build the images. Then I added the following lines to the Dockerfile.
+
+```Dockerfile
+# build stage
+FROM node:18.15.0-alpine as build-stage
+WORKDIR /app
+COPY package.json yarn.lock /code/
+RUN yarn install
+COPY . .
+RUN yarn build
+
+# production stage
+FROM nginx:stable-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+```
+
+What do we do in the Dockerfile?
+
+First of all, we create a build stage. In this stage, lts node version is pulled from repo as buld-stage then we install the dependencies and build the Vue app. Then we create a production stage. In this stage, we copy the build files from the build stage to the production stage. Finally, we run the nginx server. You can find the Dockerfile in the root directory of the project. The reason behind Dockerfile is written step by step is each instruction in the Dockerfile creates a new layer in the image. Each layer is cached separately by Docker, so if a layer has not changed since the last build, Docker can reuse it instead of rebuilding it. This is why we use multi-stage builds. We can use the build stage to build the app and then copy the build files to the production stage. This way we can reduce the size of the image.
+
+After Dockerfile I take the image of the Vue app and push it to the Docker Hub. You can find the image [here](https://hub.docker.com/repository/docker/ardabzlk/micro-blog-vue/general).
+
+Next I pulled the image from the Docker Hub to the server. I used the following command to pull the image.
+
+```bash
+docker pull ardabzlk/micro-blog-vue:{tag}
+```
+
+Then I created a container from the image. I used the following command to create a container.
+
+```bash
+docker run -d --network mongo-network -p 8000:80 ardabzlk/micro-blog-flask:{tag}
+```
+
+By doing that, micro-blog-vue app started to run on the server port 8080. -d tag allows us to run the container in the background. -p tag allows us to map the container port to the server port. --name tag allows us to give a name to the container.
+
+### Flask App
+
+Containerization of the Flask app is pretty similar to the Vue app. I created a Dockerfile in the root directory of the project on my local machine. I used my PC to take the images. Then I added the following lines to the Dockerfile.
+
+```Dockerfile
+FROM python:3.9.6-slim-buster
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the requirements file to the container
+COPY requirements.txt .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gunicorn Flask
+
+# Copy the rest of the application code to the container
+COPY . .
+
+# Set the environment variables
+ENV PORT=80
+
+# Expose the port that the application will run on
+EXPOSE 80
+
+# Start Gunicorn
+CMD gunicorn app:app \
+    --bind=0.0.0.0:$PORT
+```
+
+What do we do in the Dockerfile?
+
+First of all, we create a build stage. In this stage, lts python version is pulled from repo as buld-stage then we install the dependencies and build the Flask app. Then we create a production stage. In this stage, we copy the build files from the build stage to the production stage. Finally, we run the gunicorn server. You can find the Dockerfile in the root directory of the project. gunicorn implemented to run application on port 80 and we expose the port 80. Basically Dockerfile is the place that we tell to docker what would we do to run the app on server. Thus it follows the steps and runs the app.
+
+After Dockerfile I take the image of the Flask app and push it to the Docker Hub. You can find the image [here](https://hub.docker.com/repository/docker/ardabzlk/micro-blog-flask/general).
+
+Next I pulled the image from the Docker Hub to the server. I used the following command to pull the image.
+
+```bash
+docker pull ardabzlk/micro-blog-flask:{tag}
+```
+
+Then I created a container from the image. I used the following command to create a container.
+
+```bash
+docker run -d -p 8000:80 --name micro-blog-flask ardabzlk/micro-blog-flask:{tag}
+```
+
+By doing that, micro-blog-flask app started to run on the server port 8000. -d tag allows us to run the container in the background. -p tag allows us to map the container port to the server port. --name tag allows us to give a name to the container.
+
+### MongoDB
+
+I used the official MongoDB image from Docker Hub. I used the following command to pull the image.
+
+```bash
+docker pull mongo
+```
+
+Tricky part is to connect the MongoDB container from outside of container. I used the following command to create a container. I used the --network host tag to connect the container from outside of container. It is also a common practice to use the same network for both containers.
+
+```bash
+docker network create mongo-network
+```
+
+Thus flask app and mongo db container are in the same network which is "mongo-network". The connection string for mongo db became `mongodb://mongo:27017/`.
+
+### Docker Compose
+
+I used the Docker Compose to run the containers. I created a docker-compose.yml file in the root directory of the project.
+Verifying the docker-compose.yml file is a good practice. I used the following command to verify the docker-compose.yml file.
+
+```bash
+docker compose version
+```
+
+I used the following lines to create the docker-compose.yml file at the root directory of the project.
+
+```yml
+version: "3.9"
+
+services:
+  vue:
+    image: ardabzlk/micro-blog-vue:v.0.2
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - app_network
+
+  flask:
+    image: ardabzlk/micro-blog-flask:v.0.5
+    ports:
+      - "8000:80"
+    restart: always
+    networks:
+      - app_network
+      - mongo-network
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    networks:
+      - mongo-network
+
+networks:
+  app_network:
+    driver: bridge
+  mongo-network:
+    driver: bridge
+    external: true
+```
+
+What do we do in the docker-compose.yml file?
+We declared the services that we want to run. It allows us to manage containers from one source. I used image tag to pull the images from Docker Hub. However build tag can be used to build the images from Dockerfile as well. Port tag for the mapping the container port to the server port. Restart tag allows us to restart the container if it crashes. Networks tag allows us to connect the containers to the same network. I used the following command to run the containers. It can clearly be seen that we did basically the same thing that we did in the Dockerfile section.
+
+next thing all we have to do is to run the containers. I used the following command to run the containers.
+
+```bash
+docker compose up -d
+```
+
+### Blockers, issues and solutions
+
+I faced some issues while containerizing the project. I will explain the issues and solutions.
+
+#### Issue 1
+
+The first mistake that I did during containerization was I was trying to take the images from the server. I was trying to take the images from the server because I thought that I can use the same Dockerfile for both local and server. I was wrong. I should have used my PC to take the images. Because the Dockerfile is the place that we tell to docker what would we do to run the app on server. Thus it follows the steps and runs the app. If I take the image from the server, it stucks on the building step because server is not as powerful as my PC. Luckily I asked for help from my team-leader and he helped me to solve the issue before wasting too much time.
+
+Solution: I should have used my PC to take the images and use Dockerhub to push the images from local to server.
+
+#### Issue 2
+
+The second issue was the connection string for mongo db. I was trying to connect the mongo db container from outside of container.
+
+Solution: I used the --network host tag to connect the container from outside of container.
+
+### Conclusion
+
+In this section, I explained how I containerized the micro-blog project. I explained the Dockerfile and the commands that I used to containerize the project. I also explained the issues that I faced during the containerization. I hope this article will help you to understand the containerization process. If you have any questions or suggestions, you can reach me from [here](https://www.linkedin.com/in/ardabzlk/).
