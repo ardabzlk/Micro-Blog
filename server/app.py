@@ -66,5 +66,3 @@ app.add_url_rule("/vote", view_func=vote,
 
 app.add_url_rule("/users/<uid>/blog-posts", view_func=user_posts,
                  methods=["GET"])
-
-app.run(host="0.0.0.0", port=8000)
